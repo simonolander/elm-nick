@@ -67,6 +67,7 @@ type alias Character =
     , leftKeyCode: KeyCode
     , rightKeyCode: KeyCode
     , spriteAnimation: SpriteAnimation
+    , boardIndex: Int
     }
 
 type alias Football =
@@ -121,16 +122,16 @@ aspect : Float
 aspect = 9/16
 
 
+characterHeight : Float
+characterHeight = 1
+
+
 boardWidth : Float
-boardWidth = 30
+boardWidth = characterHeight * 5
 
 
 boardMargin : Float
 boardMargin = boardWidth / 3
-
-
-characterHeight : Float
-characterHeight = boardWidth / 5
 
 
 footballRadius : Float
@@ -156,10 +157,12 @@ init =
             , leftKeyCode = 37
             , rightKeyCode = 39
             , spriteAnimation = characterIdle
+            , boardIndex = 0
             }
         characters =
             [ character
-            ]
+            , character
+            ] |> List.indexedMap (\ index character -> { character | boardIndex = index })
         game =
             { score = 0
             , footballs = footballs
@@ -172,15 +175,15 @@ init =
             }
         cmd = Cmd.batch
             [ perform Resize Window.size
-            , generateFootball 2.0 (GameCoordinate 0 20) game
-            , generateFootball 2.5 (GameCoordinate 0 30) game
-            , generateFootball 3.0 (GameCoordinate 0 40) game
-            , generateFootball 3.5 (GameCoordinate 0 50) game
-            , generateFootball 4.0 (GameCoordinate 0 60) game
-            , generateFootball 4.5 (GameCoordinate 0 60) game
-            , generateFootball 5.0 (GameCoordinate 0 60) game
-            , generateFootball 5.5 (GameCoordinate 0 60) game
-            , generateFootball 6.0 (GameCoordinate 0 60) game
+            , generateFootball 2.0 (GameCoordinate 0 0) game
+            , generateFootball 2.2 (GameCoordinate 0 0) game
+            , generateFootball 2.4 (GameCoordinate 0 0) game
+            , generateFootball 2.6 (GameCoordinate 0 0) game
+            , generateFootball 2.8 (GameCoordinate 0 0) game
+            , generateFootball 3.0 (GameCoordinate 0 0) game
+            , generateFootball 3.2 (GameCoordinate 0 0) game
+            , generateFootball 3.4 (GameCoordinate 0 0) game
+            , generateFootball 3.6 (GameCoordinate 0 0) game
             ]
     in
         ( model
@@ -277,7 +280,7 @@ renderGame windowSize game =
         footballs = game.footballs
             |> List.map (renderFootball gameToWindowCoordinate)
         characters = game.characters
-            |> List.indexedMap (renderCharacter gameToWindowCoordinate)
+            |> List.map (renderCharacter gameToWindowCoordinate)
         elements = List.concat
             [ characters
             , footballs
@@ -312,10 +315,10 @@ renderFootball g2w football =
             ] []
 
 
-renderCharacter : (GameCoordinate -> WindowCoordinate) -> Int -> Character -> Svg.Svg msg
-renderCharacter g2w boardIndex character =
+renderCharacter : (GameCoordinate -> WindowCoordinate) -> Character -> Svg.Svg msg
+renderCharacter g2w character =
     let
-        (GameCoordinate gcx gty) = getGameCharacterTop boardIndex character.lane
+        (GameCoordinate gcx gty) = getGameCharacterTop character.boardIndex character.lane
         (WindowCoordinate wtlx wtly) = g2w (GameCoordinate (gcx - characterHeight / 2) (gty))
         (WindowCoordinate wbrx wbry) = g2w (GameCoordinate (gcx + characterHeight / 2) (gty - characterHeight))
         width = wbrx - wtlx
@@ -355,14 +358,17 @@ updateGameOnTick diff game =
         nickFootball : Football -> List Character -> (Bool, List Character)
         nickFootball football characters =
             let
-                isNickable = football.vy < 0 && football.y <= characterHeight && football.y + football.vy * diff <= characterHeight
+                isNickable = football.vy < 0 && football.y >= characterHeight && football.y + football.vy * diff <= characterHeight
             in
                 if isNickable
                 then
                     case characters of
                         (character :: tail) ->
                             let
-                                isNicked = True
+                                x = getCharacterCenterX character
+                                minX = x - characterHeight / 2
+                                maxX = x + characterHeight / 2
+                                isNicked = football.x >= minX && football.x <= maxX
                             in
                                 if isNicked then
                                     ( True
@@ -390,7 +396,7 @@ updateGameOnTick diff game =
                         (footballs__, chars__, commands) = nickFootballs tail chars_
                     in
                         if isNicked then
-                            (footballs__, chars__, generateFootball 5.0 (GameCoordinate football.x football.y) game :: commands)
+                            (footballs__, chars__, generateFootball 2.0 (GameCoordinate football.x football.y) game :: commands)
                         else
                             (football :: footballs__, chars__, commands)
                 [] ->
@@ -559,6 +565,14 @@ getGameCharacterTop boardIndex lane =
         GameCoordinate x y
 
 
+getCharacterCenterX : Character -> Float
+getCharacterCenterX character =
+    let
+        (GameCoordinate x _) = getGameCharacterTop character.boardIndex character.lane
+    in
+        x
+
+
 generateFootball : Float -> GameCoordinate -> Game -> Cmd Msg
 generateFootball time pos game =
     let
@@ -605,6 +619,7 @@ y(t) = gravity * t^2 / 2 + c1 * t + fromY
 y(0) = 0 + 0 + c2 = fromY
 y(time) = gravity * time^2 / 2 + c1 * time + fromY = toY => c1 = (toY - fromY - gravity * time^2 / 2) / time
 y'(t) = gravity * t + (toY - fromY - gravity * time^2 / 2) / time
+y'(0) = (toY - fromY - gravity * time^2 / 2) / time
 -}
 getVelocity : Float -> GameCoordinate -> GameCoordinate -> GameVelocity
 getVelocity time (GameCoordinate fromX fromY) (GameCoordinate toX toY) =
