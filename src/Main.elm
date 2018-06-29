@@ -2,6 +2,7 @@ module Main exposing (..)
 
 import Array exposing (Array)
 import Html
+import Html.Styled
 import Keyboard
 import Model exposing (..)
 import Task exposing (perform)
@@ -11,13 +12,14 @@ import Constants exposing (..)
 import Game exposing (..)
 import Update
 import View
+import PageVisibility
 
 main : Program Never Model Msg
 main = Html.program
     { init = init
     , update = Update.update
     , subscriptions = subscriptions
-    , view = View.view
+    , view = View.view >> Html.Styled.toUnstyled
     }
 
 
@@ -41,6 +43,7 @@ init =
             { score = 0
             , footballs = footballs
             , characters = characters
+            , gameState = Running
             }
         model =
             { windowSize = windowSize
@@ -67,8 +70,16 @@ init =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        [ resizes Resize
-        , AnimationFrame.diffs Tick
-        , Keyboard.downs KeyDown
-        ]
+    let
+        consIf : Bool -> a -> List a -> List a
+        consIf cond value =
+            if cond then (::) value else identity
+
+        subs =
+            [ resizes Resize
+            , Keyboard.downs KeyDown
+            , PageVisibility.visibilityChanges VisibilityChanged
+            ]
+            |> consIf (model.game.gameState == Running) (AnimationFrame.diffs Tick)
+    in
+    Sub.batch subs

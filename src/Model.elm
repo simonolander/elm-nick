@@ -2,10 +2,14 @@ module Model exposing (..)
 
 import Array exposing (Array)
 import Keyboard exposing (KeyCode)
+import PageVisibility
 import Time exposing (Time)
 import Window exposing (Size)
+
+
 type GameState =
     Running
+    | Paused
 
 type GameCoordinate = GameCoordinate Float Float
 
@@ -28,6 +32,7 @@ type alias Game =
     { score: Int
     , footballs: List Football
     , characters: List Character
+    , gameState: GameState
     }
 
 type alias Model =
@@ -41,6 +46,8 @@ type Msg =
     | Tick Time
     | KeyDown KeyCode
     | FootballGenerated Football
+    | VisibilityChanged PageVisibility.Visibility
+    | OnResumePressed
 
 type Lane = Left | Right
 
@@ -69,3 +76,16 @@ type alias Football =
     , vy: Float
     , vr: Float
     }
+
+type GameMode =
+    SinglePlayer
+    | Collaboration
+    | LastManStanding
+
+type alias Settings =
+    {
+
+    }
+
+type Menu =
+    MainMenu

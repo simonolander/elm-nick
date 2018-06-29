@@ -3,6 +3,7 @@ module Update exposing (..)
 import Array
 import Keyboard exposing (KeyCode)
 import Model exposing (..)
+import PageVisibility
 import Time exposing (Time)
 import Constants exposing (..)
 import Game exposing (..)
@@ -25,6 +26,12 @@ update msg model =
 
         FootballGenerated football ->
             updateOnFootballGenerated football model
+
+        VisibilityChanged visibility ->
+            updateOnVisibilityChanged visibility model
+
+        OnResumePressed ->
+            updateOnResumePressed model
 
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
@@ -223,6 +230,51 @@ updateGameOnFootballGenerated football game =
         { game
         | footballs = footballs
         }
+
+
+updateOnVisibilityChanged : PageVisibility.Visibility -> Model -> (Model, Cmd Msg)
+updateOnVisibilityChanged visibility model =
+    let
+        gameState : GameState
+        gameState =
+            if visibility == PageVisibility.Hidden
+            then
+                Paused
+            else
+                Paused
+
+        oldGame =
+            model.game
+
+        newGame =
+            { oldGame
+            | gameState = gameState
+            }
+
+        newModel =
+            { model
+            | game = newGame
+            }
+    in
+        ( newModel
+        , Cmd.none
+        )
+
+
+updateOnResumePressed : Model -> (Model, Cmd msg)
+updateOnResumePressed model =
+    let
+        game = model.game
+        newGame =
+            { game
+            | gameState = Running
+            }
+    in
+        ( { model
+          | game = newGame
+          }
+        , Cmd.none
+        )
 
 
 generateFootball : Float -> GameCoordinate -> Game -> Cmd Msg
