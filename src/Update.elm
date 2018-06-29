@@ -30,8 +30,11 @@ update msg model =
         VisibilityChanged visibility ->
             updateOnVisibilityChanged visibility model
 
-        OnResumePressed ->
-            updateOnResumePressed model
+        OnResumeClicked ->
+            updateOnResumeClicked model
+
+        OnMainMenuClicked ->
+            updateOnMainMenuClicked model
 
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
@@ -188,15 +191,36 @@ updateOnKeyDown keyCode model =
     in
         (newModel, cmd)
 
+
 updateGameOnKeyDown : KeyCode -> Game -> Game
 updateGameOnKeyDown keyCode game =
     let
-        characters = game.characters
-            |> List.map (updateCharacterOnKeyDown keyCode)
+        characters =
+            case game.gameState of
+                Running ->
+                    game.characters
+                    |> List.map (updateCharacterOnKeyDown keyCode)
+                Paused ->
+                    game.characters
+
+        gameState =
+            if keyCode == keyCodes.escape
+            then
+                case game.gameState of
+                    Running -> Paused
+                    Paused -> Running
+            else
+                game.gameState
+
+        newGame =
+            { game
+            | characters = characters
+            , gameState = gameState
+            }
+
     in
-        { game
-        | characters = characters
-        }
+        newGame
+
 
 updateCharacterOnKeyDown : KeyCode -> Character -> Character
 updateCharacterOnKeyDown keyCode character =
@@ -261,8 +285,24 @@ updateOnVisibilityChanged visibility model =
         )
 
 
-updateOnResumePressed : Model -> (Model, Cmd msg)
-updateOnResumePressed model =
+updateOnResumeClicked : Model -> (Model, Cmd msg)
+updateOnResumeClicked model =
+    let
+        game = model.game
+        newGame =
+            { game
+            | gameState = Running
+            }
+    in
+        ( { model
+          | game = newGame
+          }
+        , Cmd.none
+        )
+
+
+updateOnMainMenuClicked : Model -> (Model, Cmd msg)
+updateOnMainMenuClicked model =
     let
         game = model.game
         newGame =

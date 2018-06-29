@@ -1,3 +1,4 @@
 module Menu exposing (..)
 
-
+renderMainMenu =
+    ()

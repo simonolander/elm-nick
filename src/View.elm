@@ -1,7 +1,8 @@
 module View exposing (..)
 
+import Css exposing (..)
 import Game exposing (getGameCharacterTop, getGameSize)
-import Html.Styled exposing (Html, div, text)
+import Html.Styled exposing (Html, div, styled, text)
 import Html.Styled.Attributes exposing (style)
 import Html.Styled.Events exposing (onClick)
 import Model exposing (..)
@@ -19,8 +20,8 @@ view model =
         windowAspect = toFloat windowWidth / toFloat windowHeight
         (width, height) =
             if windowAspect > aspect
-            then (round (toFloat windowHeight * aspect), windowHeight)
-            else (windowWidth, round (toFloat windowWidth / aspect))
+            then (Basics.round (toFloat windowHeight * aspect), windowHeight)
+            else (windowWidth, Basics.round (toFloat windowWidth / aspect))
         left =
             if windowAspect > aspect
             then toString ((windowWidth - width) // 2) ++ "px"
@@ -96,40 +97,38 @@ renderGame windowSize game =
         result =
             if game.gameState == Paused
             then
-                div
+                styled div
+                    []
                     []
                     [ gameScene
-                    , div
-                        [ style
-                            [ ("position", "fixed")
-                            , ("width", "100%")
-                            , ("height", "100%")
-                            , ("top", "0")
-                            , ("left", "0")
-                            , ("right", "0")
-                            , ("bottom", "0")
-                            , ("background-color", "rgba(0,0,0,0.5)")
-                            , ("display", "flex")
-                            , ("align-items", "center")
-                            , ("justify-content", "center")
---                            , ("flex-direction", "column")
-                            ]
+                    , styled div
+                        [ position fixed
+                        , width (pct 100)
+                        , height (pct 100)
+                        , top (px 0)
+                        , left (px 0)
+                        , right (px 0)
+                        , bottom (px 0)
+                        , backgroundColor (rgba 0 0 0 0.5)
+                        , displayFlex
+                        , alignItems center
+                        , justifyContent center
                         ]
-                        [ div
-                            [ style
-                                [ ("width", "50%")
-                                , ("background-color", "rgba(255,255,255,0.5)")
-                                , ("border-radius", "10px")
-                                , ("padding", "10px")
-                                , ("display", "flex")
-                                , ("align-items", "center")
-                                , ("justify-content", "center")
-                                , ("flex-direction", "column")
-                                ]
+                        []
+                        [ styled div
+                            [ width (pct 50)
+                            , backgroundColor (rgba 255 255 255 0.5)
+                            , borderRadius (px 10)
+                            , padding (px 10)
+                            , displayFlex
+                            , alignItems center
+                            , justifyContent center
+                            , flexDirection column
                             ]
+                            []
                             [ UI.menuTitle [] "Paused"
-                            , UI.btn [ onClick OnResumePressed] "Resume"
-                            , UI.btn [] "Main Menu"
+                            , UI.btn [ onClick OnResumeClicked] "Resume"
+                            , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
                             ]
                         ]
                     ]

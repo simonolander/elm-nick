@@ -1,6 +1,7 @@
 module Constants exposing (..)
 
 import Array
+import Keyboard exposing (KeyCode)
 import Model exposing (SpriteAnimation)
 
 
@@ -60,3 +61,9 @@ boardMargin = boardWidth / 3
 
 footballRadius : Float
 footballRadius = characterHeight / 3 / 2
+
+
+keyCodes : { escape : KeyCode }
+keyCodes =
+    { escape = 27
+    }

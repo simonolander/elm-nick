@@ -47,7 +47,8 @@ type Msg =
     | KeyDown KeyCode
     | FootballGenerated Football
     | VisibilityChanged PageVisibility.Visibility
-    | OnResumePressed
+    | OnResumeClicked
+    | OnMainMenuClicked
 
 type Lane = Left | Right
 
