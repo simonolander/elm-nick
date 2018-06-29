@@ -45,10 +45,12 @@ init =
             , characters = characters
             , gameState = Running
             }
+        menu = Just MainMenu
         model =
             { windowSize = windowSize
-            , game = game
+            , game = Nothing
             , frameRate = 0
+            , menu = menu
             }
         cmd = Cmd.batch
             [ perform Resize Window.size
@@ -80,6 +82,6 @@ subscriptions model =
             , Keyboard.downs KeyDown
             , PageVisibility.visibilityChanges VisibilityChanged
             ]
-            |> consIf (model.game.gameState == Running) (AnimationFrame.diffs Tick)
+            |> consIf (model.game |> Maybe.map (((==) Running) << (.gameState)) |> Maybe.withDefault False) (AnimationFrame.diffs Tick)
     in
     Sub.batch subs

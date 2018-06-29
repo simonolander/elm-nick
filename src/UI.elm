@@ -43,6 +43,7 @@ btn attributes content =
         ]
 
 
+menuTitle : List (Attribute msg) -> String -> Html msg
 menuTitle attributes content =
     styled
         h1
@@ -55,3 +56,35 @@ menuTitle attributes content =
         attributes
         [ text content
         ]
+
+
+menu : List (Html msg) -> Html msg
+menu content =
+    styled div
+        [ position fixed
+        , width (pct 100)
+        , height (pct 100)
+        , top (px 0)
+        , left (px 0)
+        , right (px 0)
+        , bottom (px 0)
+        , backgroundColor (rgba 0 0 0 0.5)
+        , displayFlex
+        , alignItems center
+        , justifyContent center
+        ]
+        []
+        [ styled div
+            [ width (pct 50)
+            , backgroundColor (rgba 255 255 255 0.5)
+            , borderRadius (px 10)
+            , padding (px 10)
+            , displayFlex
+            , alignItems center
+            , justifyContent center
+            , flexDirection column
+            ]
+            []
+            content
+        ]
+

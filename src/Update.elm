@@ -3,7 +3,7 @@ module Update exposing (..)
 import Array
 import Keyboard exposing (KeyCode)
 import Model exposing (..)
-import PageVisibility
+import PageVisibility exposing (Visibility(Hidden))
 import Time exposing (Time)
 import Constants exposing (..)
 import Game exposing (..)
@@ -36,25 +36,44 @@ update msg model =
         OnMainMenuClicked ->
             updateOnMainMenuClicked model
 
+        OnSettingsClicked ->
+            ( { model | menu = Just SettingsMenu }, Cmd.none)
+
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
 updateOnTick diff model =
     let
-        (game, updateGameCommands) = updateGameOnTick diff model.game
-        newModel =
-            { model
-            | frameRate = diff
-            , game = game
-            }
+        setFrameRate frameRate model =
+            { model | frameRate = frameRate }
+
+        setGame game model =
+            { model | game = game }
+
+        chain : (model -> field) -> (field -> model -> model) -> (field -> (field, Cmd msg)) -> (model, Cmd msg) -> (model, Cmd msg)
+        chain getter setter transform (model, cmd) =
+            let
+                (newField, newCmd) =
+                    transform (getter model)
+            in
+                (setter newField model, Cmd.batch [cmd, newCmd])
+
+        updateGame : Time -> Maybe Game -> (Maybe Game, Cmd Msg)
+        updateGame diff maybeGame =
+            case maybeGame of
+                Just game ->
+                    let
+                        (newGame, cmd) = updateGameOnTick diff game
+                    in
+                        (Just newGame, cmd)
+                Nothing ->
+                    (Nothing, Cmd.none)
     in
-        ( newModel
-        , List.concat
-            [ updateGameCommands
-            ] |> Cmd.batch
-        )
+        (model, Cmd.none)
+        |> chain .frameRate setFrameRate (always (diff, Cmd.none))
+        |> chain .game setGame (updateGame diff)
 
 
-updateGameOnTick : Time -> Game -> (Game, List (Cmd Msg))
+updateGameOnTick : Time -> Game -> (Game, Cmd Msg)
 updateGameOnTick diff game =
     let
         nickFootball : Football -> List Character -> (Bool, List Character)
@@ -115,7 +134,7 @@ updateGameOnTick diff game =
           | footballs = footballs
           , characters = characters
           }
-        , commands
+        , Cmd.batch commands
         )
 
 
@@ -185,7 +204,7 @@ updateOnKeyDown keyCode model =
     let
         newModel =
             { model
-            | game = updateGameOnKeyDown keyCode model.game
+            | game = Maybe.map (updateGameOnKeyDown keyCode) model.game
             }
         cmd = Cmd.none
     in
@@ -240,7 +259,7 @@ updateCharacterOnKeyDown keyCode character =
 updateOnFootballGenerated : Football -> Model -> (Model, Cmd Msg)
 updateOnFootballGenerated football model =
     ( { model
-      | game = updateGameOnFootballGenerated football model.game
+      | game = Maybe.map (updateGameOnFootballGenerated football) model.game
       }
     , Cmd.none
     )
@@ -256,65 +275,51 @@ updateGameOnFootballGenerated football game =
         }
 
 
-updateOnVisibilityChanged : PageVisibility.Visibility -> Model -> (Model, Cmd Msg)
+updateOnVisibilityChanged : Visibility -> Model -> (Model, Cmd Msg)
 updateOnVisibilityChanged visibility model =
     let
-        gameState : GameState
-        gameState =
-            if visibility == PageVisibility.Hidden
-            then
-                Paused
-            else
-                Paused
-
-        oldGame =
-            model.game
-
-        newGame =
-            { oldGame
-            | gameState = gameState
-            }
-
-        newModel =
-            { model
-            | game = newGame
-            }
+        game =
+            Maybe.map (updateGameOnVisibilityChanged visibility) model.game
     in
-        ( newModel
+        ( { model
+          | game = game
+          }
         , Cmd.none
         )
 
+updateGameOnVisibilityChanged : Visibility -> Game -> Game
+updateGameOnVisibilityChanged visibility game =
+    { game
+    | gameState = Paused
+    }
 
 updateOnResumeClicked : Model -> (Model, Cmd msg)
 updateOnResumeClicked model =
     let
-        game = model.game
-        newGame =
-            { game
-            | gameState = Running
-            }
+        game =
+            Maybe.map updateGameOnResumeClicked model.game
     in
         ( { model
-          | game = newGame
+          | game = game
           }
         , Cmd.none
         )
+
+
+updateGameOnResumeClicked : Game -> Game
+updateGameOnResumeClicked game =
+    { game
+    | gameState = Running
+    }
 
 
 updateOnMainMenuClicked : Model -> (Model, Cmd msg)
 updateOnMainMenuClicked model =
-    let
-        game = model.game
-        newGame =
-            { game
-            | gameState = Running
-            }
-    in
-        ( { model
-          | game = newGame
-          }
-        , Cmd.none
-        )
+    ( { model
+      | menu = Just MainMenu
+      }
+    , Cmd.none
+    )
 
 
 generateFootball : Float -> GameCoordinate -> Game -> Cmd Msg

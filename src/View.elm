@@ -15,44 +15,40 @@ import Window exposing (Size)
 view : Model -> Html Msg
 view model =
     let
-        windowWidth = model.windowSize.width
-        windowHeight = model.windowSize.height
-        windowAspect = toFloat windowWidth / toFloat windowHeight
-        (width, height) =
-            if windowAspect > aspect
-            then (Basics.round (toFloat windowHeight * aspect), windowHeight)
-            else (windowWidth, Basics.round (toFloat windowWidth / aspect))
-        left =
-            if windowAspect > aspect
-            then toString ((windowWidth - width) // 2) ++ "px"
-            else "0px"
-        top =
-            if windowAspect > aspect
-            then "0px"
-            else toString ((windowHeight - height) // 2) ++ "px"
-    in
-        div
-            [ style
-                [ ("width", "100%")
-                , ("height", "100%")
-                , ("overflow", "hidden")
-                , ("background", "rgb(18, 43, 23)")
-                , ("background", "url(/assets/field.png)")
-                , ("background-repeat", "no-repeat")
-                , ("background-size", "cover")
+        frameRateDiv =
+            styled div
+                [ position absolute
+                , left (px 0)
+                , top (px 0)
+                , backgroundColor (rgb 255 255 255)
                 ]
-            ]
-            [ renderGame model.windowSize model.game
-            , div
-                [ style
-                    [ ("position", "absolute")
-                    , ("left", "0")
-                    , ("top", "0")
-                    , ("background", "white")
-                    ]
-                ]
+                []
                 [ text (toString model.frameRate)
                 ]
+
+        gameDiv =
+            model.game
+            |> Maybe.map (renderGame model.windowSize)
+            |> Maybe.withDefault (div [] [])
+
+
+        menuDiv =
+            model.menu
+            |> Maybe.map renderMenu
+            |> Maybe.withDefault (div [] [])
+    in
+        styled div
+            [ width (pct 100)
+            , height (pct 100)
+            , overflow hidden
+            , backgroundImage (url "/assets/field.png")
+            , backgroundRepeat noRepeat
+            , backgroundSize cover
+            ]
+            []
+            [ gameDiv
+            , menuDiv
+            , frameRateDiv
             ]
 
 
@@ -101,35 +97,10 @@ renderGame windowSize game =
                     []
                     []
                     [ gameScene
-                    , styled div
-                        [ position fixed
-                        , width (pct 100)
-                        , height (pct 100)
-                        , top (px 0)
-                        , left (px 0)
-                        , right (px 0)
-                        , bottom (px 0)
-                        , backgroundColor (rgba 0 0 0 0.5)
-                        , displayFlex
-                        , alignItems center
-                        , justifyContent center
-                        ]
-                        []
-                        [ styled div
-                            [ width (pct 50)
-                            , backgroundColor (rgba 255 255 255 0.5)
-                            , borderRadius (px 10)
-                            , padding (px 10)
-                            , displayFlex
-                            , alignItems center
-                            , justifyContent center
-                            , flexDirection column
-                            ]
-                            []
-                            [ UI.menuTitle [] "Paused"
-                            , UI.btn [ onClick OnResumeClicked] "Resume"
-                            , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
-                            ]
+                    , UI.menu
+                        [ UI.menuTitle [] "Paused"
+                        , UI.btn [ onClick OnResumeClicked] "Resume"
+                        , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
                         ]
                     ]
             else
@@ -177,3 +148,25 @@ renderCharacter g2w character =
             , Svg.Styled.Attributes.xlinkHref currentFrame
             , Svg.Styled.Attributes.imageRendering "pixelated"
             ] []
+
+
+renderMenu : Menu -> Html Msg
+renderMenu menu =
+    case menu of
+        MainMenu ->
+            renderMainMenu
+        SettingsMenu ->
+            UI.menu
+                [ UI.menuTitle [] "Settings"
+                , UI.btn [ onClick OnSettingsClicked] "Settings"
+                , UI.btn [ onClick OnMainMenuClicked] "Ok"
+                ]
+
+
+renderMainMenu : Html Msg
+renderMainMenu =
+    UI.menu
+        [ UI.menuTitle [] "Main Menu"
+        , UI.btn [ onClick OnSettingsClicked] "Settings"
+        , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
+        ]

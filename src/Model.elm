@@ -37,8 +37,9 @@ type alias Game =
 
 type alias Model =
     { windowSize: Size
-    , game: Game
+    , game: Maybe Game
     , frameRate: Time
+    , menu: Maybe Menu
     }
 
 type Msg =
@@ -49,6 +50,7 @@ type Msg =
     | VisibilityChanged PageVisibility.Visibility
     | OnResumeClicked
     | OnMainMenuClicked
+    | OnSettingsClicked
 
 type Lane = Left | Right
 
@@ -90,3 +92,4 @@ type alias Settings =
 
 type Menu =
     MainMenu
+    | SettingsMenu
