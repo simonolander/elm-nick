@@ -44,13 +44,23 @@ init =
             , footballs = footballs
             , characters = characters
             , gameState = Running
+            , gameTime = 0
             }
         menu = Just MainMenu
+        characterSettings =
+            [ { leftKeyCode = 37
+              , rightKeyCode = 39
+              }
+            ]
+        settings =
+            { characterSettings = characterSettings
+            }
         model =
             { windowSize = windowSize
             , game = Nothing
             , frameRate = 0
             , menu = menu
+            , settings = settings
             }
         cmd = Cmd.batch
             [ perform Resize Window.size
@@ -73,15 +83,26 @@ init =
 subscriptions : Model -> Sub Msg
 subscriptions model =
     let
-        consIf : Bool -> a -> List a -> List a
-        consIf cond value =
-            if cond then (::) value else identity
+        animationSubscriptions : List (Sub Msg)
+        animationSubscriptions =
+            if model.game
+                |> Maybe.map .gameState
+                |> Maybe.map ((==) Running)
+                |> Maybe.withDefault False
+            then
+                [ AnimationFrame.diffs Tick
+                ]
+            else
+                []
 
         subs =
-            [ resizes Resize
-            , Keyboard.downs KeyDown
-            , PageVisibility.visibilityChanges VisibilityChanged
-            ]
-            |> consIf (model.game |> Maybe.map (((==) Running) << (.gameState)) |> Maybe.withDefault False) (AnimationFrame.diffs Tick)
+            List.concat
+                [ [ resizes Resize
+                  , Keyboard.downs KeyDown
+                  , PageVisibility.visibilityChanges VisibilityChanged
+                  ]
+                , animationSubscriptions
+                ]
+
     in
     Sub.batch subs

@@ -10,6 +10,7 @@ import Svg.Styled exposing (Svg)
 import Svg.Styled.Attributes
 import Constants exposing (..)
 import UI
+import Util exposing (filterMaybe)
 import Window exposing (Size)
 
 view : Model -> Html Msg
@@ -90,23 +91,44 @@ renderGame windowSize game =
                 ]
                 elements
 
-        result =
+        pausedDiv =
             if game.gameState == Paused
             then
-                styled div
-                    []
-                    []
-                    [ gameScene
-                    , UI.menu
-                        [ UI.menuTitle [] "Paused"
-                        , UI.btn [ onClick OnResumeClicked] "Resume"
-                        , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
-                        ]
+                UI.menu
+                    [ UI.menuTitle [] "Paused"
+                    , UI.btn [ onClick OnResumeClicked] "Resume"
+                    , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
                     ]
-            else
-                gameScene
+                |> Just
+            else Nothing
+
+        score =
+            styled div
+                [ position absolute
+                , margin auto
+                , textAlign center
+                , left (px 0)
+                , top (px 0)
+                , right (px 0)
+                , bottom (px 0)
+                , fontSize xxLarge
+                , marginTop (px 8)
+                , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                , fontWeight bold
+                , fontFamily sansSerif
+                , color (rgb 255 255 255)
+                ]
+                []
+                [ text (toString game.score)
+                ]
+
     in
-        result
+        div [] <|
+            filterMaybe
+                [ Just gameScene
+                , Just score
+                , pausedDiv
+                ]
 
 
 renderFootball : (GameCoordinate -> WindowCoordinate) -> Football -> Svg.Styled.Svg msg
@@ -158,15 +180,17 @@ renderMenu menu =
         SettingsMenu ->
             UI.menu
                 [ UI.menuTitle [] "Settings"
-                , UI.btn [ onClick OnSettingsClicked] "Settings"
                 , UI.btn [ onClick OnMainMenuClicked] "Ok"
+                , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
                 ]
+        other -> UI.menu [ UI.menuTitle [] (toString other)]
 
 
 renderMainMenu : Html Msg
 renderMainMenu =
     UI.menu
         [ UI.menuTitle [] "Main Menu"
+        , UI.btn [ onClick OnSinglePlayerClicked] "Single Player"
         , UI.btn [ onClick OnSettingsClicked] "Settings"
         , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
         ]

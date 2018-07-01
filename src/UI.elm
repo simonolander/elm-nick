@@ -16,9 +16,9 @@ btn attributes content =
             [ hover
                 [ backgroundColor theme.secondary
                 ]
-            , focus
-                [ backgroundColor theme.secondary
-                ]
+--            , focus
+--                [ backgroundColor theme.secondary
+--                ]
             , width (pct 100)
             , fontSize large
             , color (rgb 255 255 255)
@@ -32,6 +32,7 @@ btn attributes content =
             , border3 (px 1) solid theme.primary
             , borderBottom3 (px 3) solid theme.secondary
             , display inlineBlock
+            , flexShrink (int 0)
             , textAlign center
             , textDecoration none
             , backgroundImage none
@@ -75,13 +76,15 @@ menu content =
         ]
         []
         [ styled div
-            [ width (pct 50)
+            [ minWidth (pct 30)
+            , maxHeight (pct 80)
             , backgroundColor (rgba 255 255 255 0.5)
             , borderRadius (px 10)
             , padding (px 10)
             , displayFlex
+            , overflow auto
             , alignItems center
-            , justifyContent center
+--            , justifyContent center
             , flexDirection column
             ]
             []

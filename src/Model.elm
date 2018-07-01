@@ -33,6 +33,7 @@ type alias Game =
     , footballs: List Football
     , characters: List Character
     , gameState: GameState
+    , gameTime: Float
     }
 
 type alias Model =
@@ -40,6 +41,7 @@ type alias Model =
     , game: Maybe Game
     , frameRate: Time
     , menu: Maybe Menu
+    , settings: Settings
     }
 
 type Msg =
@@ -51,6 +53,7 @@ type Msg =
     | OnResumeClicked
     | OnMainMenuClicked
     | OnSettingsClicked
+    | OnSinglePlayerClicked
 
 type Lane = Left | Right
 
@@ -85,11 +88,16 @@ type GameMode =
     | Collaboration
     | LastManStanding
 
-type alias Settings =
-    {
+type alias CharacterSetting =
+    { leftKeyCode: KeyCode
+    , rightKeyCode: KeyCode
+    }
 
+type alias Settings =
+    { characterSettings: List CharacterSetting
     }
 
 type Menu =
     MainMenu
     | SettingsMenu
+    | MultiPlayerMenu

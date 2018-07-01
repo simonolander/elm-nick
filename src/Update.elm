@@ -39,6 +39,9 @@ update msg model =
         OnSettingsClicked ->
             ( { model | menu = Just SettingsMenu }, Cmd.none)
 
+        OnSinglePlayerClicked ->
+            updateOnSinglePlayerClicked model
+
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
 updateOnTick diff model =
@@ -123,16 +126,34 @@ updateGameOnTick diff game =
                 [] ->
                     (footballs, characters, [])
 
-        (unnickedFootballs, nickedCharacters, commands) = nickFootballs game.footballs game.characters
+        (unnickedFootballs, nickedCharacters, bounceFootballCommands) = nickFootballs game.footballs game.characters
 
         footballs = unnickedFootballs
             |> List.map (updateFootballOnTick diff)
         characters = nickedCharacters
             |> List.map (updateCharacterOnTick diff)
+        score = game.score + (List.length game.footballs - List.length unnickedFootballs)
+        gameTime = game.gameTime + diff
+
+        newFootballCommands =
+            if floor gameTime > (floor game.gameTime)
+            then
+                [ generateFootball pi (GameCoordinate 0 0) game
+                ]
+            else
+                []
+
+        commands =
+            List.concat
+                [ bounceFootballCommands
+                , newFootballCommands
+                ]
     in
         ( { game
           | footballs = footballs
           , characters = characters
+          , score = score
+          , gameTime = gameTime
           }
         , Cmd.batch commands
         )
@@ -317,9 +338,44 @@ updateOnMainMenuClicked : Model -> (Model, Cmd msg)
 updateOnMainMenuClicked model =
     ( { model
       | menu = Just MainMenu
+      , game = Nothing
       }
     , Cmd.none
     )
+
+updateOnSinglePlayerClicked : Model -> (Model, Cmd Msg)
+updateOnSinglePlayerClicked model =
+    let
+        footballs =
+            []
+        character =
+            { lane = Left
+            , leftKeyCode = 37
+            , rightKeyCode = 39
+            , spriteAnimation = characterIdle
+            , boardIndex = 0
+            }
+        characters =
+            [ character
+            , character
+            ] |> List.indexedMap (\ index character -> { character | boardIndex = index })
+        game =
+            { score = 0
+            , footballs = footballs
+            , characters = characters
+            , gameState = Running
+            , gameTime = 0
+            }
+        cmd = Cmd.batch
+            [ generateFootball 2.0 (GameCoordinate 0 0) game
+            ]
+    in
+        ( { model
+          | game = Just game
+          , menu = Nothing
+          }
+        , cmd
+        )
 
 
 generateFootball : Float -> GameCoordinate -> Game -> Cmd Msg
