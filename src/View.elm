@@ -239,5 +239,4 @@ renderMainMenu =
         [ UI.menuTitle [] "Main Menu"
         , UI.btn [ onClick OnSinglePlayerClicked] "Single Player"
         , UI.btn [ onClick OnSettingsClicked] "Settings"
-        , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
         ]
