@@ -130,6 +130,7 @@ updateGameOnTick diff game =
 
         footballs = unnickedFootballs
             |> List.map (updateFootballOnTick diff)
+            |> List.filter (\football -> football.y + footballRadius > 0)
         characters = nickedCharacters
             |> List.map (updateCharacterOnTick diff)
         score = game.score + (List.length game.footballs - List.length unnickedFootballs)
