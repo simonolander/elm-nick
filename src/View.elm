@@ -60,12 +60,16 @@ renderGame windowSize game =
         h = toFloat windowSize.height
         (GameSize gw gh) = getGameSize game
 
+        vpw = gw
+        vph = h / w * vpw
+
         gameToWindowCoordinate : GameCoordinate -> WindowCoordinate
         gameToWindowCoordinate gameCoordinate =
             let
                 (GameCoordinate gx gy) = gameCoordinate
-                wx = gx / gw * w
-                wy = (gh - gy) / gh * h
+                wx = gx / gw * vpw
+--                wy = (gh - gy) / gh * vph
+                wy = vph - gy
             in
                 WindowCoordinate wx wy
 
@@ -87,7 +91,7 @@ renderGame windowSize game =
             Svg.Styled.svg
                 [ Svg.Styled.Attributes.width (toString w)
                 , Svg.Styled.Attributes.height (toString h)
-                , Svg.Styled.Attributes.viewBox ("0 0 " ++ (toString w) ++ " " ++ (toString h))
+                , Svg.Styled.Attributes.viewBox ("0 0 " ++ (toString vpw) ++ " " ++ (toString vph))
                 ]
                 elements
 
@@ -140,16 +144,58 @@ renderFootball g2w football =
         width = wbrx - wtlx
         height = wbry - wtly
         angle = football.r
+        radius = width / 2
+
+        footballImageSvg cx cy r rotation =
+            Svg.Styled.image
+                [ Svg.Styled.Attributes.x (toString (cx - r))
+                , Svg.Styled.Attributes.y (toString (cy - r))
+                , Svg.Styled.Attributes.width (toString (2 * r))
+                , Svg.Styled.Attributes.height (toString (2 * r))
+                , Svg.Styled.Attributes.transform ("rotate(" ++ (toString rotation) ++ ", " ++ (toString cx) ++ ", " ++ (toString cy) ++ ")")
+                , Svg.Styled.Attributes.xlinkHref "/assets/football.png"
+                , Svg.Styled.Attributes.imageRendering "pixelated"
+                , Svg.Styled.Attributes.preserveAspectRatio "none"
+                ]
+                []
+
+        result =
+            if wbry < 0
+            then
+                let
+                    cx =
+                        wcx
+                    outerRadius =
+                        radius * 2
+                    margin =
+                        outerRadius * (sqrt 2 - 1) * 1.5
+                    cy =
+                        outerRadius + margin
+                    d =
+                        "M" ++ (toString cx) ++ "," ++ (toString margin) ++
+                        "A" ++ (toString outerRadius) ++ " " ++ (toString outerRadius) ++ " 0 1 0 " ++ (toString (cx + outerRadius)) ++ " " ++ (toString cy) ++
+                        "L" ++ (toString (cx + outerRadius)) ++ "," ++ (toString margin) ++
+                        "Z"
+                in
+                    Svg.Styled.g
+                        [ Svg.Styled.Attributes.transform ("rotate(-45, " ++ (toString cx) ++ ", " ++ (toString cy) ++ ")")
+                        ]
+                        [ Svg.Styled.path
+                            [ Svg.Styled.Attributes.d d
+                            , Svg.Styled.Attributes.fill "pink"
+                            , Svg.Styled.Attributes.stroke "salmon"
+                            , Svg.Styled.Attributes.strokeWidth "0.03"
+                            ]
+                            []
+                        , footballImageSvg cx cy radius angle
+                        ]
+
+            else
+                footballImageSvg wcx wcy radius angle
+
     in
-        Svg.Styled.image
-            [ Svg.Styled.Attributes.x (toString wtlx)
-            , Svg.Styled.Attributes.y (toString wtly)
-            , Svg.Styled.Attributes.width (toString width)
-            , Svg.Styled.Attributes.height (toString height)
-            , Svg.Styled.Attributes.transform ("rotate(" ++ (toString football.r) ++ ", " ++ (toString wcx) ++ ", " ++ (toString wcy) ++ ")")
-            , Svg.Styled.Attributes.xlinkHref "/assets/football.png"
-            , Svg.Styled.Attributes.imageRendering "pixelated"
-            ] []
+        result
+
 
 
 renderCharacter : (GameCoordinate -> WindowCoordinate) -> Character -> Svg.Styled.Svg msg
@@ -169,6 +215,7 @@ renderCharacter g2w character =
             , Svg.Styled.Attributes.height (toString height)
             , Svg.Styled.Attributes.xlinkHref currentFrame
             , Svg.Styled.Attributes.imageRendering "pixelated"
+            , Svg.Styled.Attributes.preserveAspectRatio "none"
             ] []
 
 
