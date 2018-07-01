@@ -2,7 +2,7 @@ module View exposing (..)
 
 import Css exposing (..)
 import Game exposing (getGameCharacterTop, getGameSize)
-import Html.Styled exposing (Html, div, styled, text)
+import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (style)
 import Html.Styled.Events exposing (onClick)
 import Model exposing (..)
@@ -111,7 +111,7 @@ renderGame windowSize game =
                 |> Just
             else Nothing
 
-        score =
+        scoreAndDroppedBalls =
             styled div
                 [ position absolute
                 , margin auto
@@ -121,21 +121,31 @@ renderGame windowSize game =
                 , right (px 0)
                 , bottom (px 0)
                 , fontSize xxLarge
-                , marginTop (px 8)
                 , textShadow3 (px 1) (px 2) (rgb 0 0 0)
                 , fontWeight bold
                 , fontFamily sansSerif
                 , color (rgb 255 255 255)
                 ]
                 []
-                [ text (toString game.score)
-                ]
+                (filterMaybe
+                    [ Just <| styled h1
+                        [ marginBottom (px 0) ] [] [ text (toString game.score) ]
+                    , if game.numberOfDroppedFootballs > 0 then
+                        Just <| styled h2
+                            [ marginTop (px 8)
+                            , color (rgb 255 150 150)
+                            ]
+                            []
+                            [ text (toString game.numberOfDroppedFootballs) ]
+                        else
+                            Nothing
+                    ])
 
     in
         div [] <|
             filterMaybe
                 [ Just gameScene
-                , Just score
+                , Just scoreAndDroppedBalls
                 , pausedDiv
                 ]
 

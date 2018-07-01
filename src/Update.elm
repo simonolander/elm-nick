@@ -128,21 +128,35 @@ updateGameOnTick diff game =
 
         (unnickedFootballs, nickedCharacters, bounceFootballCommands) = nickFootballs game.footballs game.characters
 
-        footballs = unnickedFootballs
+        movedFootballs =
+            unnickedFootballs
             |> List.map (updateFootballOnTick diff)
-            |> List.filter (\football -> football.y + footballRadius > 0)
-        characters = nickedCharacters
-            |> List.map (updateCharacterOnTick diff)
-        score = game.score + (List.length game.footballs - List.length unnickedFootballs)
-        gameTime = game.gameTime + diff
 
-        newFootballCommands =
-            if floor gameTime > (floor game.gameTime)
+        undroppedFootballs =
+            movedFootballs
+            |> List.filter (\football -> football.y + footballRadius > 0)
+
+        characters =
+            nickedCharacters
+            |> List.map (updateCharacterOnTick diff)
+
+        score =
+            game.score + (List.length game.footballs - List.length unnickedFootballs)
+
+        numberOfDroppedFootballs =
+            game.numberOfDroppedFootballs + (List.length movedFootballs - List.length undroppedFootballs)
+
+        gameTime =
+            game.gameTime + diff
+
+        (remainingFootballGenerationTime, newFootballCommands) =
+            if game.remainingFootballGenerationTime - diff < 0
             then
-                [ generateFootball (GameCoordinate 0 0) game
-                ]
+                ( game.remainingFootballGenerationTime - diff + game.footballGenerationTime
+                , [ generateFootball (GameCoordinate -characterHeight characterHeight) game ]
+                )
             else
-                []
+                (game.remainingFootballGenerationTime - diff, [])
 
         commands =
             List.concat
@@ -151,10 +165,12 @@ updateGameOnTick diff game =
                 ]
     in
         ( { game
-          | footballs = footballs
+          | footballs = undroppedFootballs
           , characters = characters
           , score = score
           , gameTime = gameTime
+          , remainingFootballGenerationTime = remainingFootballGenerationTime
+          , numberOfDroppedFootballs = numberOfDroppedFootballs
           }
         , Cmd.batch commands
         )
@@ -347,6 +363,7 @@ updateOnMainMenuClicked model =
 updateOnSinglePlayerClicked : Model -> (Model, Cmd Msg)
 updateOnSinglePlayerClicked model =
     let
+        settings = model.settings
         footballs =
             []
         character =
@@ -366,9 +383,12 @@ updateOnSinglePlayerClicked model =
             , characters = characters
             , gameState = Running
             , gameTime = 0
+            , footballGenerationTime = settings.footballGenerationTime
+            , remainingFootballGenerationTime = 2
+            , numberOfDroppedFootballs = 0
             }
         cmd = Cmd.batch
-            [ generateFootball (GameCoordinate 0 0) game
+            [
             ]
     in
         ( { model

@@ -34,6 +34,9 @@ type alias Game =
     , characters: List Character
     , gameState: GameState
     , gameTime: Float
+    , footballGenerationTime: Float
+    , remainingFootballGenerationTime: Float
+    , numberOfDroppedFootballs: Int
     }
 
 type alias Model =
@@ -87,6 +90,7 @@ type GameMode =
     SinglePlayer
     | Collaboration
     | LastManStanding
+    | SinglePlayerFree
 
 type alias CharacterSetting =
     { leftKeyCode: KeyCode
@@ -95,9 +99,11 @@ type alias CharacterSetting =
 
 type alias Settings =
     { characterSettings: List CharacterSetting
+    , footballGenerationTime: Float
     }
 
 type Menu =
     MainMenu
     | SettingsMenu
     | MultiPlayerMenu
+    | SinglePlayerMenu

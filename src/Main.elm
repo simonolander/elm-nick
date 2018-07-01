@@ -26,26 +26,6 @@ main = Html.program
 init : (Model, Cmd Msg)
 init =
     let windowSize = Size 0 0
-        footballs =
-            []
-        character =
-            { lane = Left
-            , leftKeyCode = 37
-            , rightKeyCode = 39
-            , spriteAnimation = characterIdle
-            , boardIndex = 0
-            }
-        characters =
-            [ character
-            , character
-            ] |> List.indexedMap (\ index character -> { character | boardIndex = index })
-        game =
-            { score = 0
-            , footballs = footballs
-            , characters = characters
-            , gameState = Running
-            , gameTime = 0
-            }
         menu = Just MainMenu
         characterSettings =
             [ { leftKeyCode = 37
@@ -54,6 +34,7 @@ init =
             ]
         settings =
             { characterSettings = characterSettings
+            , footballGenerationTime = 10.0
             }
         model =
             { windowSize = windowSize
