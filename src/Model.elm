@@ -56,7 +56,8 @@ type Msg =
     | OnResumeClicked
     | OnMainMenuClicked
     | OnSettingsClicked
-    | OnSinglePlayerClicked
+    | OnSinglePlayerMenuClicked
+    | OnSinglePlayerFreeModeClicked
 
 type Lane = Left | Right
 

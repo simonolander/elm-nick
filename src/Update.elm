@@ -39,8 +39,11 @@ update msg model =
         OnSettingsClicked ->
             ( { model | menu = Just SettingsMenu }, Cmd.none)
 
-        OnSinglePlayerClicked ->
-            updateOnSinglePlayerClicked model
+        OnSinglePlayerMenuClicked ->
+            ( { model | menu = Just SinglePlayerMenu }, Cmd.none)
+
+        OnSinglePlayerFreeModeClicked ->
+            updateOnSinglePlayerFreeModeClicked model
 
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
@@ -360,8 +363,8 @@ updateOnMainMenuClicked model =
     , Cmd.none
     )
 
-updateOnSinglePlayerClicked : Model -> (Model, Cmd Msg)
-updateOnSinglePlayerClicked model =
+updateOnSinglePlayerFreeModeClicked : Model -> (Model, Cmd Msg)
+updateOnSinglePlayerFreeModeClicked model =
     let
         settings = model.settings
         footballs =

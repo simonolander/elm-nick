@@ -271,6 +271,12 @@ renderMenu menu =
                 , UI.btn [ onClick OnMainMenuClicked] "Ok"
                 , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
                 ]
+        SinglePlayerMenu ->
+            UI.menu
+                [ UI.menuTitle [] "Single Player"
+                , UI.btn [ onClick OnSinglePlayerFreeModeClicked] "Free Mode"
+                , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
+                ]
         other -> UI.menu [ UI.menuTitle [] (toString other)]
 
 
@@ -278,6 +284,6 @@ renderMainMenu : Html Msg
 renderMainMenu =
     UI.menu
         [ UI.menuTitle [] "Main Menu"
-        , UI.btn [ onClick OnSinglePlayerClicked] "Single Player"
+        , UI.btn [ onClick OnSinglePlayerMenuClicked] "Single Player"
         , UI.btn [ onClick OnSettingsClicked] "Settings"
         ]
