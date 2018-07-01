@@ -53,8 +53,8 @@ y(time) = gravity * time^2 / 2 + c1 * time + fromY = toY => c1 = (toY - fromY - 
 y'(t) = gravity * t + (toY - fromY - gravity * time^2 / 2) / time
 y'(0) = (toY - fromY - gravity * time^2 / 2) / time
 -}
-getVelocity : Float -> GameCoordinate -> GameCoordinate -> GameVelocity
-getVelocity time (GameCoordinate fromX fromY) (GameCoordinate toX toY) =
+getVelocity : GameCoordinate -> GameCoordinate -> Float -> GameVelocity
+getVelocity (GameCoordinate fromX fromY) (GameCoordinate toX toY) time =
     let
         vx : Float
         vx = (toX - fromX) / time

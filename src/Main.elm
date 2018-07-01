@@ -64,15 +64,6 @@ init =
             }
         cmd = Cmd.batch
             [ perform Resize Window.size
-            , Update.generateFootball 2.0 (GameCoordinate 0 0) game
-            , Update.generateFootball 2.2 (GameCoordinate 0 0) game
-            , Update.generateFootball 2.4 (GameCoordinate 0 0) game
-            , Update.generateFootball 2.6 (GameCoordinate 0 0) game
-            , Update.generateFootball 2.8 (GameCoordinate 0 0) game
-            , Update.generateFootball 3.0 (GameCoordinate 0 0) game
-            , Update.generateFootball 3.2 (GameCoordinate 0 0) game
-            , Update.generateFootball 3.4 (GameCoordinate 0 0) game
-            , Update.generateFootball 3.6 (GameCoordinate 0 0) game
             ]
     in
         ( model

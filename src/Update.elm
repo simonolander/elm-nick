@@ -120,7 +120,7 @@ updateGameOnTick diff game =
                         (footballs__, chars__, commands) = nickFootballs tail chars_
                     in
                         if isNicked then
-                            (footballs__, chars__, generateFootball 2.0 (GameCoordinate football.x football.y) game :: commands)
+                            (footballs__, chars__, generateFootball (GameCoordinate football.x football.y) game :: commands)
                         else
                             (football :: footballs__, chars__, commands)
                 [] ->
@@ -139,7 +139,7 @@ updateGameOnTick diff game =
         newFootballCommands =
             if floor gameTime > (floor game.gameTime)
             then
-                [ generateFootball pi (GameCoordinate 0 0) game
+                [ generateFootball (GameCoordinate 0 0) game
                 ]
             else
                 []
@@ -368,7 +368,7 @@ updateOnSinglePlayerClicked model =
             , gameTime = 0
             }
         cmd = Cmd.batch
-            [ generateFootball 2.0 (GameCoordinate 0 0) game
+            [ generateFootball (GameCoordinate 0 0) game
             ]
     in
         ( { model
@@ -379,8 +379,8 @@ updateOnSinglePlayerClicked model =
         )
 
 
-generateFootball : Float -> GameCoordinate -> Game -> Cmd Msg
-generateFootball time pos game =
+generateFootball : GameCoordinate -> Game -> Cmd Msg
+generateFootball pos game =
     let
         (GameCoordinate x y) = pos
 
@@ -394,24 +394,29 @@ generateFootball time pos game =
         destination : Random.Generator GameCoordinate
         destination = Random.map2 getGameCharacterTop boardIndex lane
 
+        time =
+            Random.float 1.5 3.0
+
         velocity : Random.Generator GameVelocity
-        velocity = Random.map (getVelocity time pos) destination
-
-        vx : Random.Generator Float
-        vx = Random.map (\(GameVelocity vx _) -> vx) velocity
-
-        vy : Random.Generator Float
-        vy = Random.map (\(GameVelocity _ vy) -> vy) velocity
+        velocity = Random.map2 (getVelocity pos) destination time
 
         vr : Random.Generator Float
         vr = Random.float 0 360
 
+        f x y r (GameVelocity vx vy) vr =
+            { x = x
+            , y = y
+            , r = r
+            , vx = vx
+            , vy = vy
+            , vr = vr
+            }
+
         football : Random.Generator Football
         football =
-            Random.map3
-                (Football x y 0)
-                vx
-                vy
+            Random.map2
+                (f x y 0)
+                velocity
                 vr
     in
         Random.generate FootballGenerated football
