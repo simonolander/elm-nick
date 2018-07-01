@@ -77,13 +77,18 @@ renderGame windowSize game =
             game.footballs
             |> List.map (renderFootball gameToWindowCoordinate)
 
+        dividers =
+            List.range 0 (List.length game.characters)
+            |> List.map (toFloat >> ((*) (boardWidth + 2 * boardMargin)) >> (renderDivider gameToWindowCoordinate))
+
         characters =
             game.characters
             |> List.map (renderCharacter gameToWindowCoordinate)
 
         elements =
             List.concat
-                [ characters
+                [ dividers
+                , characters
                 , footballs
                 ]
 
@@ -214,6 +219,32 @@ renderCharacter g2w character =
             , Svg.Styled.Attributes.width (toString width)
             , Svg.Styled.Attributes.height (toString height)
             , Svg.Styled.Attributes.xlinkHref currentFrame
+            , Svg.Styled.Attributes.imageRendering "pixelated"
+            , Svg.Styled.Attributes.preserveAspectRatio "none"
+            ] []
+
+
+renderDivider : (GameCoordinate -> WindowCoordinate) -> Float ->  Svg.Styled.Svg msg
+renderDivider g2w x =
+    let
+        (WindowCoordinate wtlx wtly) =
+            g2w (GameCoordinate (x - characterHeight / 2) characterHeight)
+
+        (WindowCoordinate wbrx wbry) =
+            g2w (GameCoordinate (x + characterHeight / 2) 0)
+
+        width =
+            wbrx - wtlx
+
+        height =
+            wbry - wtly
+    in
+        Svg.Styled.image
+            [ Svg.Styled.Attributes.x (toString wtlx)
+            , Svg.Styled.Attributes.y (toString wtly)
+            , Svg.Styled.Attributes.width (toString width)
+            , Svg.Styled.Attributes.height (toString height)
+            , Svg.Styled.Attributes.xlinkHref "/assets/fence.png"
             , Svg.Styled.Attributes.imageRendering "pixelated"
             , Svg.Styled.Attributes.preserveAspectRatio "none"
             ] []
