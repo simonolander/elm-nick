@@ -33,6 +33,8 @@ type alias MaxCurrent =
     , current: Int
     }
 
+type alias Lives = MaxCurrent
+
 type alias Game =
     { score: Int
     , footballs: List Football
@@ -43,6 +45,7 @@ type alias Game =
     , remainingFootballGenerationTime: Float
     , numberOfDroppedFootballs: Int
     , gameMode: GameMode
+    , lives: Maybe Lives
     }
 
 type alias Model =

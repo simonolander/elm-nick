@@ -170,6 +170,7 @@ updateOnSinglePlayerFreeModeClicked model =
             , remainingFootballGenerationTime = 3
             , numberOfDroppedFootballs = 0
             , gameMode = SinglePlayerFree
+            , lives = Nothing
             }
         cmd = Cmd.batch
             [
@@ -198,7 +199,7 @@ updateOnSinglePlayerSurvivalModeClicked model =
             , rightKeyCode = 39
             , spriteAnimation = characterIdle
             , boardIndex = 0
-            , lives = Just lives
+            , lives = Nothing
             }
         characters =
             [ character
@@ -214,6 +215,7 @@ updateOnSinglePlayerSurvivalModeClicked model =
             , remainingFootballGenerationTime = 3
             , numberOfDroppedFootballs = 0
             , gameMode = SinglePlayerSurvival
+            , lives = Just lives
             }
         cmd = Cmd.batch
             [

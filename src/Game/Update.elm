@@ -14,43 +14,58 @@ import Game exposing (..)
 import PageVisibility exposing (Visibility)
 import Random
 import Time exposing (Time)
-import Util exposing (separate)
+import Util exposing (..)
 
 
 updateGameOnTick : Time -> Game -> (Game, Cmd Msg)
 updateGameOnTick diff game =
     let
+        updateGameTime diff game =
+            { game
+            | gameTime = game.gameTime + diff
+            }
+    in
+        (game, [])
+        |> chain (nickFootballs diff)
+        |> noCmd (moveFootballs diff)
+        |> noCmd dropFootballs
+        |> noCmd (updateSpriteAnimations diff)
+        |> chain (updateFootballGenerationTimer diff)
+        |> noCmd (updateGameTime diff)
+        |> batch
+
+
+nickFootballs : Time -> Game -> (Game, List (Cmd Msg))
+nickFootballs diff game =
+    let
         nickFootball : Football -> List Character -> (Bool, List Character)
         nickFootball football characters =
-            let
-                isNickable = football.vy < 0 && football.y >= characterHeight && football.y + football.vy * diff <= characterHeight
-            in
-                if isNickable
-                then
-                    case characters of
-                        (character :: tail) ->
-                            let
-                                x = getCharacterCenterX character
-                                minX = x - characterHeight / 2
-                                maxX = x + characterHeight / 2
-                                isNicked = football.x >= minX && football.x <= maxX
-                            in
-                                if isNicked then
-                                    ( True
-                                    , { character
-                                      | spriteAnimation = characterNick
-                                      } :: tail
-                                    )
-                                else
-                                    let
-                                        (isNicked_, chars_) = nickFootball football tail
-                                    in
-                                        (isNicked_, character :: chars_)
+            if isFootballNickable diff football
+            then
+                case characters of
+                    (character :: tail) ->
+                        let
+                            x = getCharacterCenterX character
+                            minX = x - characterHeight / 2
+                            maxX = x + characterHeight / 2
+                            isNicked = football.x >= minX && football.x <= maxX
+                        in
+                            if isNicked then
+                                ( True
+                                , { character
+                                  | spriteAnimation = characterNick
+                                  } :: tail
+                                )
+                            else
+                                let
+                                    (isNicked_, chars_) = nickFootball football tail
+                                in
+                                    (isNicked_, character :: chars_)
 
-                        [] ->
-                            (False, characters)
-                else
-                    (False, characters)
+                    [] ->
+                        (False, characters)
+            else
+                (False, characters)
 
         nickFootballs : List Football -> List Character -> (List Football, List Character, List (Cmd Msg))
         nickFootballs footballs characters =
@@ -69,56 +84,47 @@ updateGameOnTick diff game =
 
         (unnickedFootballs, nickedCharacters, bounceFootballCommands) = nickFootballs game.footballs game.characters
 
-        movedFootballs =
-            unnickedFootballs
-            |> List.map (updateFootballOnTick diff)
-
-        isDropped : Football -> Bool
-        isDropped football =
-            football.y + footballRadius < 0
-
-        (droppedFootballs, undroppedFootballs) =
-            separate isDropped movedFootballs
-
-        characters =
-            nickedCharacters
-            |> List.map (updateCharacterOnDroppedFootball droppedFootballs)
-            |> List.map (updateCharacterOnTick diff)
-
-        score =
-            game.score + (List.length game.footballs - List.length unnickedFootballs)
-
-        numberOfDroppedFootballs =
-            game.numberOfDroppedFootballs + (List.length movedFootballs - List.length undroppedFootballs)
-
-        gameTime =
-            game.gameTime + diff
-
-        (remainingFootballGenerationTime, newFootballCommands) =
-            if game.remainingFootballGenerationTime - diff < 0
-            then
-                ( game.remainingFootballGenerationTime - diff + game.footballGenerationTime
-                , [ generateFootball (GameCoordinate -characterHeight characterHeight) game ]
-                )
-            else
-                (game.remainingFootballGenerationTime - diff, [])
-
-        commands =
-            List.concat
-                [ bounceFootballCommands
-                , newFootballCommands
-                ]
+        numberOfNickedFootballs = List.length game.footballs - List.length unnickedFootballs
     in
         ( { game
-          | footballs = undroppedFootballs
-          , characters = characters
-          , score = score
-          , gameTime = gameTime
-          , remainingFootballGenerationTime = remainingFootballGenerationTime
-          , numberOfDroppedFootballs = numberOfDroppedFootballs
+          | footballs = unnickedFootballs
+          , characters = nickedCharacters
+          , score = game.score + numberOfNickedFootballs
           }
-        , Cmd.batch commands
+        , bounceFootballCommands
         )
+
+
+moveFootballs : Time -> Game -> Game
+moveFootballs dt game =
+    { game
+    | footballs = List.map (moveFootball dt) game.footballs
+    }
+
+
+dropFootballs : Game -> Game
+dropFootballs game =
+    let
+        (droppedFootballs, undroppedFootballs) =
+            game.footballs
+            |> separate isFootballDropped
+
+        numberOfDroppedFootballs =
+            List.length droppedFootballs
+
+        newCharacters =
+            game.characters
+            |> List.map (updateCharacterOnDroppedFootball droppedFootballs)
+
+        newLives =
+            Maybe.map (decreaseLives numberOfDroppedFootballs) game.lives
+    in
+        { game
+        | footballs = undroppedFootballs
+        , characters = newCharacters
+        , lives = newLives
+        , numberOfDroppedFootballs = game.numberOfDroppedFootballs + numberOfDroppedFootballs
+        }
 
 
 updateCharacterOnDroppedFootball : List Football -> Character -> Character
@@ -140,52 +146,52 @@ updateCharacterOnDroppedFootball footballs character =
             in
                 withinLeft || withinRight
 
-        removeLife lives =
-            { lives
-            | current = max (lives.current - 1) 0
-            }
-
         update football character =
-            case character.lives of
-                Just lives ->
-                    if characterCouldHaveNickedFootball character football
-                    then
-                        { character
-                        | lives = Just (removeLife lives)
-                        }
-                    else
-                        character
-                Nothing ->
-                    character
+            if characterCouldHaveNickedFootball character football
+            then
+                { character
+                | lives = Maybe.map (decreaseLives 1) character.lives
+                }
+            else
+                character
     in
         List.foldl update character footballs
 
 
-updateFootballOnTick : Float -> Football -> Football
-updateFootballOnTick diff football =
+updateFootballGenerationTimer : Time -> Game -> (Game, List (Cmd Msg))
+updateFootballGenerationTimer dt game =
     let
-        dx = football.vx * diff
-        dy = football.vy * diff
-        x = football.x + dx
-        y = football.y + dy
-        vy = football.vy + gravity * diff
-        r = football.r + football.vr * diff
+        (remainingFootballGenerationTime, newFootballCommands) =
+            if game.remainingFootballGenerationTime - dt < 0
+            then
+                ( game.remainingFootballGenerationTime - dt + game.footballGenerationTime
+                , [ generateFootball (GameCoordinate (-characterHeight) characterHeight) game ]
+                )
+            else
+                (game.remainingFootballGenerationTime - dt, [])
     in
-        { football
-        | x = x
-        , y = y
-        , vy = vy
-        , r = r
+        ( { game
+          | remainingFootballGenerationTime = remainingFootballGenerationTime
+          }
+        , newFootballCommands
+        )
+
+
+updateSpriteAnimations : Time -> Game -> Game
+updateSpriteAnimations diff game =
+    let
+        updateCharacterSpriteAnimation character =
+            { character
+            | spriteAnimation = updateAnimationOnTick diff character.spriteAnimation characterIdle
+            }
+
+        characters =
+            List.map updateCharacterSpriteAnimation game.characters
+    in
+        { game
+        | characters = characters
         }
 
-updateCharacterOnTick : Time -> Character -> Character
-updateCharacterOnTick diff character =
-    let
-        spriteAnimation = updateAnimationOnTick diff character.spriteAnimation characterIdle
-    in
-        { character
-        | spriteAnimation = spriteAnimation
-        }
 
 
 updateAnimationOnTick : Time -> SpriteAnimation -> SpriteAnimation -> SpriteAnimation
@@ -332,3 +338,28 @@ generateFootball pos game =
                 vr
     in
         Random.generate FootballGenerated football
+
+
+isFootballDropped : Football -> Bool
+isFootballDropped football =
+    football.y < 0
+
+
+decreaseLives : Int -> Lives -> Lives
+decreaseLives numberOfLives lives =
+    { lives
+    | current = max 0 (lives.current - numberOfLives)
+    }
+
+moveFootball : Time -> Football -> Football
+moveFootball dt football =
+    { football
+    | x = football.x + football.vx * dt
+    , y = football.y + football.vy * dt
+    , vy = football.vy + gravity * dt
+    , r = football.r + football.vr * dt
+    }
+
+isFootballNickable : Time -> Football -> Bool
+isFootballNickable dt football =
+    football.vy < 0 && football.y >= characterHeight && football.y + football.vy * dt <= characterHeight

@@ -27,3 +27,21 @@ separate func list =
                     (true, head :: false)
 
         [] -> ([], [])
+
+
+chain : (a -> (a, List b)) -> (a, List (List b)) -> (a, List (List b))
+chain func (a, list) =
+    let
+        (a_, list_) = func a
+    in
+        (a_, list_ :: list)
+
+
+noCmd : (a -> a) -> (a, List (List b)) -> (a, List (List b))
+noCmd func (a, list) =
+    (func a, list)
+
+
+batch : (a, List (List (Cmd b))) -> (a, Cmd b)
+batch (a, list) =
+    (a, Cmd.batch (List.concat list))
