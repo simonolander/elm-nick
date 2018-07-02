@@ -32,8 +32,28 @@ updateGameOnTick diff game =
         |> noCmd (updateSpriteAnimations diff)
         |> chain (updateFootballGenerationTimer diff)
         |> noCmd (updateGameTime diff)
+        |> noCmd checkForGameOver
         |> batch
 
+
+checkForGameOver : Game -> Game
+checkForGameOver game =
+    let
+        outOfLives =
+            game.lives
+            |> Maybe.map (.current >> ((>=) 0))
+            |> Maybe.withDefault False
+
+        gameState =
+            if outOfLives
+            then
+                GameOver
+            else
+                game.gameState
+    in
+        { game
+        | gameState = gameState
+        }
 
 nickFootballs : Time -> Game -> (Game, List (Cmd Msg))
 nickFootballs diff game =
@@ -118,6 +138,8 @@ dropFootballs game =
 
         newLives =
             Maybe.map (decreaseLives numberOfDroppedFootballs) game.lives
+
+
     in
         { game
         | footballs = undroppedFootballs
@@ -193,7 +215,6 @@ updateSpriteAnimations diff game =
         }
 
 
-
 updateAnimationOnTick : Time -> SpriteAnimation -> SpriteAnimation -> SpriteAnimation
 updateAnimationOnTick diff spriteAnimation defaultAnimation =
     if spriteAnimation.repeating then
@@ -236,7 +257,11 @@ updateGameOnKeyDown keyCode game =
                 Running ->
                     game.characters
                     |> List.map (updateCharacterOnKeyDown keyCode)
+
                 Paused ->
+                    game.characters
+
+                GameOver ->
                     game.characters
 
         gameState =
@@ -245,6 +270,7 @@ updateGameOnKeyDown keyCode game =
                 case game.gameState of
                     Running -> Paused
                     Paused -> Running
+                    GameOver -> GameOver
             else
                 game.gameState
 

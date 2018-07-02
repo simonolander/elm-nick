@@ -59,6 +59,9 @@ renderGame windowSize game =
                 ]
                 elements
 
+        hud =
+            renderHUD game
+
         pausedDiv =
             if game.gameState == Paused
             then
@@ -67,9 +70,20 @@ renderGame windowSize game =
                     , UI.btn [ onClick ResumeClicked] "Resume"
                     , UI.btn [ onClick MainMenuClicked] "Main Menu"
                     ]
-                |> Just
-            else Nothing
+            else
+                div [] []
+    in
+        div
+            []
+            [ gameScene
+            , hud
+            , pausedDiv
+            ]
 
+
+renderHUD : Game -> Html Msg
+renderHUD game =
+    let
         scoreAndDroppedBalls =
             styled div
                 [ position absolute
@@ -99,6 +113,7 @@ renderGame windowSize game =
                         else
                             Nothing
                     ])
+            |> Just
 
         countDown =
             if game.gameTime < 4
@@ -135,15 +150,28 @@ renderGame windowSize game =
             else
                 Nothing
 
-
-    in
-        div [] <|
+        elements =
             filterMaybe
-                [ Just gameScene
-                , Just scoreAndDroppedBalls
-                , countDown
-                , pausedDiv
+                [ countDown
+                , scoreAndDroppedBalls
+--                , gameLives
                 ]
+    in
+        styled div
+            [ position fixed
+            , width (pct 100)
+            , height (pct 100)
+            , top (px 0)
+            , left (px 0)
+            , right (px 0)
+            , bottom (px 0)
+            , displayFlex
+            , alignItems center
+            , justifyContent center
+            ]
+            []
+            elements
+
 
 
 renderFootball : (GameCoordinate -> WindowCoordinate) -> Football -> Svg.Styled.Svg msg

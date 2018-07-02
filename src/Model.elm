@@ -10,6 +10,7 @@ import Window exposing (Size)
 type GameState =
     Running
     | Paused
+    | GameOver
 
 type GameCoordinate = GameCoordinate Float Float
 
