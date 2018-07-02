@@ -37,6 +37,7 @@ type alias Game =
     , footballGenerationTime: Float
     , remainingFootballGenerationTime: Float
     , numberOfDroppedFootballs: Int
+    , gameMode: GameMode
     }
 
 type alias Model =
@@ -58,6 +59,7 @@ type Msg =
     | SettingsClicked
     | SinglePlayerMenuClicked
     | SinglePlayerFreeModeClicked
+    | SinglePlayerSurvivalModeClicked
 
 type Lane = Left | Right
 
@@ -88,7 +90,7 @@ type alias Football =
     }
 
 type GameMode =
-    SinglePlayer
+    SinglePlayerSurvival
     | Collaboration
     | LastManStanding
     | SinglePlayerFree

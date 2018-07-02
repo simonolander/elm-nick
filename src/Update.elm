@@ -45,6 +45,9 @@ update msg model =
         SinglePlayerFreeModeClicked ->
             updateOnSinglePlayerFreeModeClicked model
 
+        SinglePlayerSurvivalModeClicked ->
+            updateOnSinglePlayerSurvivalModeClicked model
+
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
 updateOnTick diff model =
@@ -389,6 +392,46 @@ updateOnSinglePlayerFreeModeClicked model =
             , footballGenerationTime = settings.footballGenerationTime
             , remainingFootballGenerationTime = 2
             , numberOfDroppedFootballs = 0
+            , gameMode = SinglePlayerFree
+            }
+        cmd = Cmd.batch
+            [
+            ]
+    in
+        ( { model
+          | game = Just game
+          , menu = Nothing
+          }
+        , cmd
+        )
+
+updateOnSinglePlayerSurvivalModeClicked : Model -> (Model, Cmd Msg)
+updateOnSinglePlayerSurvivalModeClicked model =
+    let
+        settings = model.settings
+        footballs =
+            []
+        character =
+            { lane = Left
+            , leftKeyCode = 37
+            , rightKeyCode = 39
+            , spriteAnimation = characterIdle
+            , boardIndex = 0
+            }
+        characters =
+            [ character
+            , character
+            ] |> List.indexedMap (\ index character -> { character | boardIndex = index })
+        game =
+            { score = 0
+            , footballs = footballs
+            , characters = characters
+            , gameState = Running
+            , gameTime = 0
+            , footballGenerationTime = settings.footballGenerationTime
+            , remainingFootballGenerationTime = 2
+            , numberOfDroppedFootballs = 0
+            , gameMode = SinglePlayerSurvival
             }
         cmd = Cmd.batch
             [

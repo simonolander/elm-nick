@@ -274,7 +274,7 @@ renderMenu menu =
         SinglePlayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Single Player"
-                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Survival"
+                , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Survival"
                 , UI.btn [ onClick SinglePlayerFreeModeClicked] "Free Mode"
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
