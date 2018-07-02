@@ -100,11 +100,48 @@ renderGame windowSize game =
                             Nothing
                     ])
 
+        countDown =
+            if game.gameTime < 4
+            then
+                let
+                    (countDownText, opacity_) =
+                        if game.gameTime < 1 then
+                            ("3", 1 - (game.gameTime - 0)^2)
+                        else if game.gameTime < 2 then
+                            ("2", 1 - (game.gameTime - 1)^2)
+                        else if game.gameTime < 3 then
+                            ("1", 1 - (game.gameTime - 2)^2)
+                        else
+                            ("Go", 1 - (game.gameTime - 3)^2)
+                in
+                    styled div
+                        [ position absolute
+                          , margin auto
+                          , textAlign center
+                          , left (px 0)
+                          , top (pc 15)
+                          , right (px 0)
+                          , bottom (px 0)
+                          , fontSize (pc 15)
+                          , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                          , fontWeight bold
+                          , fontFamily sansSerif
+                          , color (rgb 255 255 255)
+                          , opacity (num opacity_)
+                        ]
+                        []
+                        [ text countDownText]
+                    |> Just
+            else
+                Nothing
+
+
     in
         div [] <|
             filterMaybe
                 [ Just gameScene
                 , Just scoreAndDroppedBalls
+                , countDown
                 , pausedDiv
                 ]
 
@@ -169,7 +206,6 @@ renderFootball g2w football =
 
     in
         result
-
 
 
 renderCharacter : (GameCoordinate -> WindowCoordinate) -> Character -> Svg.Styled.Svg msg

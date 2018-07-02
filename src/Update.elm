@@ -166,7 +166,7 @@ updateOnSinglePlayerFreeModeClicked model =
             , gameState = Running
             , gameTime = 0
             , footballGenerationTime = settings.footballGenerationTime
-            , remainingFootballGenerationTime = 2
+            , remainingFootballGenerationTime = 3
             , numberOfDroppedFootballs = 0
             , gameMode = SinglePlayerFree
             }
@@ -205,7 +205,7 @@ updateOnSinglePlayerSurvivalModeClicked model =
             , gameState = Running
             , gameTime = 0
             , footballGenerationTime = settings.footballGenerationTime
-            , remainingFootballGenerationTime = 2
+            , remainingFootballGenerationTime = 3
             , numberOfDroppedFootballs = 0
             , gameMode = SinglePlayerSurvival
             }
