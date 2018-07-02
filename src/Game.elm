@@ -23,24 +23,26 @@ getGameSize game =
 getGameCharacterTop : Int -> Lane -> GameCoordinate
 getGameCharacterTop boardIndex lane =
     let
-        x : Float
-        x = case lane of
-            Left ->
-                toFloat boardIndex * (boardWidth + 2 * boardMargin) + boardMargin
-            Right ->
-                toFloat boardIndex * (boardWidth + 2 * boardMargin) + boardMargin + boardWidth
-        y : Float
-        y = characterHeight
+        x =
+            getLaneCenterX lane boardIndex
+        y =
+            characterHeight
     in
         GameCoordinate x y
 
 
 getCharacterCenterX : Character -> Float
 getCharacterCenterX character =
-    let
-        (GameCoordinate x _) = getGameCharacterTop character.boardIndex character.lane
-    in
-        x
+    getLaneCenterX character.lane character.boardIndex
+
+
+getLaneCenterX : Lane -> Int -> Float
+getLaneCenterX lane boardIndex =
+    case lane of
+        Left ->
+            toFloat boardIndex * (boardWidth + 2 * boardMargin) + boardMargin
+        Right ->
+            toFloat boardIndex * (boardWidth + 2 * boardMargin) + boardMargin + boardWidth
 
 
 {-
@@ -63,3 +65,22 @@ getVelocity (GameCoordinate fromX fromY) (GameCoordinate toX toY) time =
         vy = (toY - fromY - gravity * time^2 / 2) / time
     in
         GameVelocity vx vy
+
+{-
+y''(t) = gravity
+y'(t) = gravity * t + vy
+y(t) = gravity * t^2 / 2 + vy * t + py
+characterHeight = gravity * t^2 / 2 + vy * t + py
+t^2 + (2 * vy / gravity) * t + (py - characterHeight) * 2 / gravity = 0
+t = -(vy / gravity) +/- sqrt( (vy / gravity)^2 + (characterHeight - py) * 2 / gravity )
+
+x'(t) = vx
+x(t) = vx * t + px
+
+-}
+getXWhenNickable : Football -> Float
+getXWhenNickable football =
+    let
+        t = -(football.vy / gravity) + sqrt( (football.vy / gravity)^2 + (characterHeight - football.y) * 2 / gravity )
+    in
+        football.vx * t + football.x

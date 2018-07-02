@@ -14,6 +14,7 @@ import Game exposing (..)
 import PageVisibility exposing (Visibility)
 import Random
 import Time exposing (Time)
+import Util exposing (separate)
 
 
 updateGameOnTick : Time -> Game -> (Game, Cmd Msg)
@@ -72,12 +73,16 @@ updateGameOnTick diff game =
             unnickedFootballs
             |> List.map (updateFootballOnTick diff)
 
-        undroppedFootballs =
-            movedFootballs
-            |> List.filter (\football -> football.y + footballRadius > 0)
+        isDropped : Football -> Bool
+        isDropped football =
+            football.y + footballRadius < 0
+
+        (droppedFootballs, undroppedFootballs) =
+            separate isDropped movedFootballs
 
         characters =
             nickedCharacters
+            |> List.map (updateCharacterOnDroppedFootball droppedFootballs)
             |> List.map (updateCharacterOnTick diff)
 
         score =
@@ -114,6 +119,46 @@ updateGameOnTick diff game =
           }
         , Cmd.batch commands
         )
+
+
+updateCharacterOnDroppedFootball : List Football -> Character -> Character
+updateCharacterOnDroppedFootball footballs character =
+    let
+        characterCouldHaveNickedFootball character football =
+            let
+                xWhenNickable =
+                    getXWhenNickable football
+                leftX =
+                    getLaneCenterX Left character.boardIndex
+                rightX =
+                    getLaneCenterX Right character.boardIndex
+                dx = characterHeight / 2
+                withinLeft =
+                    leftX - dx <= xWhenNickable && xWhenNickable <= leftX + dx
+                withinRight =
+                    rightX - dx <= xWhenNickable && xWhenNickable <= rightX + dx
+            in
+                withinLeft || withinRight
+
+        removeLife lives =
+            { lives
+            | current = max (lives.current - 1) 0
+            }
+
+        update football character =
+            case character.lives of
+                Just lives ->
+                    if characterCouldHaveNickedFootball character football
+                    then
+                        { character
+                        | lives = Just (removeLife lives)
+                        }
+                    else
+                        character
+                Nothing ->
+                    character
+    in
+        List.foldl update character footballs
 
 
 updateFootballOnTick : Float -> Football -> Football
