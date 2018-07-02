@@ -30,19 +30,19 @@ update msg model =
         VisibilityChanged visibility ->
             updateOnVisibilityChanged visibility model
 
-        OnResumeClicked ->
+        ResumeClicked ->
             updateOnResumeClicked model
 
-        OnMainMenuClicked ->
+        MainMenuClicked ->
             updateOnMainMenuClicked model
 
-        OnSettingsClicked ->
+        SettingsClicked ->
             ( { model | menu = Just SettingsMenu }, Cmd.none)
 
-        OnSinglePlayerMenuClicked ->
+        SinglePlayerMenuClicked ->
             ( { model | menu = Just SinglePlayerMenu }, Cmd.none)
 
-        OnSinglePlayerFreeModeClicked ->
+        SinglePlayerFreeModeClicked ->
             updateOnSinglePlayerFreeModeClicked model
 
 

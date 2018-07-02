@@ -53,11 +53,11 @@ type Msg =
     | KeyDown KeyCode
     | FootballGenerated Football
     | VisibilityChanged PageVisibility.Visibility
-    | OnResumeClicked
-    | OnMainMenuClicked
-    | OnSettingsClicked
-    | OnSinglePlayerMenuClicked
-    | OnSinglePlayerFreeModeClicked
+    | ResumeClicked
+    | MainMenuClicked
+    | SettingsClicked
+    | SinglePlayerMenuClicked
+    | SinglePlayerFreeModeClicked
 
 type Lane = Left | Right
 

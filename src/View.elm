@@ -105,8 +105,8 @@ renderGame windowSize game =
             then
                 UI.menu
                     [ UI.menuTitle [] "Paused"
-                    , UI.btn [ onClick OnResumeClicked] "Resume"
-                    , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
+                    , UI.btn [ onClick ResumeClicked] "Resume"
+                    , UI.btn [ onClick MainMenuClicked] "Main Menu"
                     ]
                 |> Just
             else Nothing
@@ -268,14 +268,15 @@ renderMenu menu =
         SettingsMenu ->
             UI.menu
                 [ UI.menuTitle [] "Settings"
-                , UI.btn [ onClick OnMainMenuClicked] "Ok"
-                , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
+                , UI.btn [ onClick MainMenuClicked] "Ok"
+                , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
         SinglePlayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Single Player"
-                , UI.btn [ onClick OnSinglePlayerFreeModeClicked] "Free Mode"
-                , UI.btn [ onClick OnMainMenuClicked] "Main Menu"
+                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Survival"
+                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Free Mode"
+                , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
         other -> UI.menu [ UI.menuTitle [] (toString other)]
 
@@ -284,6 +285,6 @@ renderMainMenu : Html Msg
 renderMainMenu =
     UI.menu
         [ UI.menuTitle [] "Main Menu"
-        , UI.btn [ onClick OnSinglePlayerMenuClicked] "Single Player"
-        , UI.btn [ onClick OnSettingsClicked] "Settings"
+        , UI.btn [ onClick SinglePlayerMenuClicked] "Single Player"
+        , UI.btn [ onClick SettingsClicked] "Settings"
         ]
