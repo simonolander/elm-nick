@@ -217,16 +217,19 @@ renderCharacter g2w character =
         width = wbrx - wtlx
         height = wbry - wtly
         currentFrame = character.spriteAnimation.currentFrame
+
+        characterSprite =
+            Svg.Styled.image
+                [ Svg.Styled.Attributes.x (toString wtlx)
+                , Svg.Styled.Attributes.y (toString wtly)
+                , Svg.Styled.Attributes.width (toString width)
+                , Svg.Styled.Attributes.height (toString height)
+                , Svg.Styled.Attributes.xlinkHref currentFrame
+                , Svg.Styled.Attributes.imageRendering "pixelated"
+                , Svg.Styled.Attributes.preserveAspectRatio "none"
+                ] []
     in
-        Svg.Styled.image
-            [ Svg.Styled.Attributes.x (toString wtlx)
-            , Svg.Styled.Attributes.y (toString wtly)
-            , Svg.Styled.Attributes.width (toString width)
-            , Svg.Styled.Attributes.height (toString height)
-            , Svg.Styled.Attributes.xlinkHref currentFrame
-            , Svg.Styled.Attributes.imageRendering "pixelated"
-            , Svg.Styled.Attributes.preserveAspectRatio "none"
-            ] []
+        characterSprite
 
 
 renderDivider : (GameCoordinate -> WindowCoordinate) -> Float ->  Svg.Styled.Svg msg

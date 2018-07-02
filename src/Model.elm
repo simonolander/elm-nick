@@ -28,6 +28,11 @@ type alias SizeF =
     , height: Float
     }
 
+type alias MaxCurrent =
+    { max: Int
+    , current: Int
+    }
+
 type alias Game =
     { score: Int
     , footballs: List Football
@@ -78,6 +83,7 @@ type alias Character =
     , rightKeyCode: KeyCode
     , spriteAnimation: SpriteAnimation
     , boardIndex: Int
+    , lives: Maybe MaxCurrent
     }
 
 type alias Football =

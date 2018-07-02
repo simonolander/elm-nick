@@ -154,6 +154,7 @@ updateOnSinglePlayerFreeModeClicked model =
             , rightKeyCode = 39
             , spriteAnimation = characterIdle
             , boardIndex = 0
+            , lives = Nothing
             }
         characters =
             [ character
@@ -187,12 +188,17 @@ updateOnSinglePlayerSurvivalModeClicked model =
         settings = model.settings
         footballs =
             []
+        lives =
+            { max = 3
+            , current = 3
+            }
         character =
             { lane = Left
             , leftKeyCode = 37
             , rightKeyCode = 39
             , spriteAnimation = characterIdle
             , boardIndex = 0
+            , lives = Just lives
             }
         characters =
             [ character
