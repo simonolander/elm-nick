@@ -301,9 +301,17 @@ updateCharacterOnKeyDown keyCode character =
 
 updateGameOnVisibilityChanged : Visibility -> Game -> Game
 updateGameOnVisibilityChanged visibility game =
-    { game
-    | gameState = Paused
-    }
+    case game.gameState of
+        Running ->
+            { game
+            | gameState = Paused
+            }
+
+        Paused ->
+            game
+
+        GameOver ->
+            game
 
 
 updateGameOnResumeClicked : Game -> Game
