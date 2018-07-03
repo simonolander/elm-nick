@@ -5,6 +5,7 @@ import Css exposing (..)
 import Game exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onClick)
+import Html.Styled.Attributes
 import Model exposing (..)
 import Svg.Styled
 import Svg.Styled.Attributes
@@ -84,36 +85,37 @@ renderGame windowSize game =
 renderHUD : Game -> Html Msg
 renderHUD game =
     let
-        scoreAndDroppedBalls =
+        score =
             styled div
-                [ position absolute
-                , margin auto
-                , textAlign center
-                , left (px 0)
-                , top (px 0)
-                , right (px 0)
-                , bottom (px 0)
-                , fontSize xxLarge
+                [ alignSelf start
+                , fontSize (pc 4)
                 , textShadow3 (px 1) (px 2) (rgb 0 0 0)
                 , fontWeight bold
                 , fontFamily sansSerif
                 , color (rgb 255 255 255)
                 ]
                 []
-                (filterMaybe
-                    [ Just <| styled h1
-                        [ marginBottom (px 0) ] [] [ text (toString game.score) ]
-                    , if game.numberOfDroppedFootballs > 0 then
-                        Just <| styled h2
-                            [ marginTop (px 8)
-                            , color (rgb 255 150 150)
-                            ]
-                            []
-                            [ text (toString game.numberOfDroppedFootballs) ]
-                        else
-                            Nothing
-                    ])
-            |> Just
+                [ text (toString game.score)
+                ]
+
+
+        droppedBalls =
+            if game.numberOfDroppedFootballs > 0 && game.gameMode == SinglePlayerFree
+            then
+                styled div
+                    [ alignSelf start
+                    , fontSize (pc 3)
+                    , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                    , fontWeight bold
+                    , fontFamily sansSerif
+                    , color (rgb 255 150 150)
+                    , marginTop (px 8)
+                    ]
+                    []
+                    [ text (toString game.numberOfDroppedFootballs)
+                    ]
+            else
+                text ""
 
         countDown =
             if game.gameTime < 4
@@ -130,32 +132,67 @@ renderHUD game =
                             ("Go", 1 - (game.gameTime - 3)^2)
                 in
                     styled div
-                        [ position absolute
-                          , margin auto
-                          , textAlign center
-                          , left (px 0)
-                          , top (pc 15)
-                          , right (px 0)
-                          , bottom (px 0)
-                          , fontSize (pc 15)
-                          , textShadow3 (px 1) (px 2) (rgb 0 0 0)
-                          , fontWeight bold
-                          , fontFamily sansSerif
-                          , color (rgb 255 255 255)
-                          , opacity (num opacity_)
+                        [ fontSize (pc 15)
+                        , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                        , fontWeight bold
+                        , fontFamily sansSerif
+                        , color (rgb 255 255 255)
+                        , opacity (num opacity_)
                         ]
                         []
                         [ text countDownText]
-                    |> Just
             else
-                Nothing
+                text ""
 
-        elements =
-            filterMaybe
-                [ countDown
-                , scoreAndDroppedBalls
---                , gameLives
+        lives =
+            case game.lives of
+                Just lives ->
+                    styled div
+                        [ displayFlex
+                        , justifyContent center
+                        ]
+                        []
+                        ( List.range 1 lives.max
+                            |> List.map (\index -> if index <= lives.current then "/assets/red-heart.png" else "/assets/grey-heart.png")
+                            |> List.map
+                                ( \filePath ->
+                                    styled img
+                                        [ marginRight (px 8)
+                                        , height (pc 3)
+                                        , lastChild
+                                            [ marginRight (px 0)
+                                            ]
+                                        ]
+                                        [ Html.Styled.Attributes.src filePath]
+                                        []
+                                )
+                        )
+
+                Nothing ->
+                    text ""
+
+        topRow =
+            styled div
+                [textAlign center]
+                []
+                [ score
+                , droppedBalls
+                , lives
                 ]
+
+
+        middleRow =
+            styled div
+                [ textAlign center ]
+                []
+                [ countDown
+                ]
+
+
+        bottomRow =
+            div
+                []
+                []
     in
         styled div
             [ position fixed
@@ -166,11 +203,14 @@ renderHUD game =
             , right (px 0)
             , bottom (px 0)
             , displayFlex
-            , alignItems center
-            , justifyContent center
+            , flexDirection column
+            , justifyContent spaceBetween
             ]
             []
-            elements
+            [ topRow
+            , middleRow
+            , bottomRow
+            ]
 
 
 
