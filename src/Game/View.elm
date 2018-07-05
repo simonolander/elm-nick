@@ -74,6 +74,7 @@ renderGame windowSize game =
                 GameOver ->
                     UI.menu
                         [ UI.menuTitle [] ("Score " ++ (toString game.score))
+                        , UI.scoreboard game.scoreboard
                         , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Replay"
                         , UI.btn [ onClick MainMenuClicked] "Main Menu"
                         ]

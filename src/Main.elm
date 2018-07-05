@@ -35,6 +35,7 @@ init =
         settings =
             { characterSettings = characterSettings
             , footballGenerationTime = 10.0
+            , username = "Anon"
             }
         model =
             { windowSize = windowSize

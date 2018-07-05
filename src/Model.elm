@@ -116,6 +116,7 @@ type alias CharacterSetting =
 type alias Settings =
     { characterSettings: List CharacterSetting
     , footballGenerationTime: Float
+    , username: String
     }
 
 type Menu =

@@ -2,6 +2,8 @@ module UI exposing (..)
 
 import Css exposing (..)
 import Html.Styled exposing (..)
+import Model exposing (Score)
+import RemoteData exposing (WebData, RemoteData(..))
 
 theme : { secondary : Color, primary : Color }
 theme =
@@ -91,3 +93,60 @@ menu content =
             content
         ]
 
+
+scoreboard : WebData (List Score) -> Html msg
+scoreboard webData =
+    styled div
+        [ width (pct 100)
+        , maxHeight (pct 50)
+        , borderRadius (px 10)
+        , padding (px 10)
+        , boxSizing borderBox
+        , backgroundColor (rgba 200 200 255 0.5)
+        , displayFlex
+        , overflow auto
+        , flexDirection column
+        , justifyContent flexStart
+        , fontSize xLarge
+        , color (rgb 255 255 255)
+        , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+        , fontWeight bold
+        , fontFamily sansSerif
+        ]
+        []
+        ( case webData of
+            NotAsked ->
+                [ styled span
+                    [textAlign center]
+                    []
+                    [text "Request not actually sent"]
+                ]
+            Loading ->
+                [ styled span
+                    [textAlign center]
+                    []
+                    [text "Loading scores..."]
+                ]
+            Success scores ->
+                scores
+                |> List.map
+                    ( \score ->
+                        styled div
+                            [ displayFlex
+                            , overflow auto
+                            , justifyContent spaceBetween
+                            , flexDirection row
+                            , flexShrink (int 0)
+                            ]
+                            []
+                            [ span [] [text score.username]
+                            , span [] [text (toString score.score)]
+                            ]
+                    )
+            Failure error ->
+                [ styled span
+                    [textAlign center]
+                    []
+                    [text ("Could not load scores: " ++ toString error)]
+                ]
+        )
