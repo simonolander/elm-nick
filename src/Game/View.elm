@@ -63,22 +63,29 @@ renderGame windowSize game =
         hud =
             renderHUD game
 
-        pausedDiv =
-            if game.gameState == Paused
-            then
-                UI.menu
-                    [ UI.menuTitle [] "Paused"
-                    , UI.btn [ onClick ResumeClicked] "Resume"
-                    , UI.btn [ onClick MainMenuClicked] "Main Menu"
-                    ]
-            else
-                div [] []
+        overlay =
+            case game.gameState of
+                Paused ->
+                    UI.menu
+                        [ UI.menuTitle [] "Paused"
+                        , UI.btn [ onClick ResumeClicked] "Resume"
+                        , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                        ]
+                GameOver ->
+                    UI.menu
+                        [ UI.menuTitle [] ("Score " ++ (toString game.score))
+                        , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Replay"
+                        , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                        ]
+                Running ->
+                    text ""
+
     in
         div
             []
             [ gameScene
             , hud
-            , pausedDiv
+            , overlay
             ]
 
 

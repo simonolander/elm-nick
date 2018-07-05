@@ -5,6 +5,7 @@ import Keyboard exposing (KeyCode)
 import PageVisibility
 import Time exposing (Time)
 import Window exposing (Size)
+import RemoteData exposing (WebData)
 
 
 type GameState =
@@ -47,6 +48,7 @@ type alias Game =
     , numberOfDroppedFootballs: Int
     , gameMode: GameMode
     , lives: Maybe Lives
+    , scoreboard : WebData (List Score)
     }
 
 type alias Model =
@@ -69,6 +71,7 @@ type Msg =
     | SinglePlayerMenuClicked
     | SinglePlayerFreeModeClicked
     | SinglePlayerSurvivalModeClicked
+    | ReceiveScores (WebData (List Score))
 
 type Lane = Left | Right
 
@@ -120,3 +123,11 @@ type Menu =
     | SettingsMenu
     | MultiPlayerMenu
     | SinglePlayerMenu
+
+
+-- REST --
+
+type alias Score =
+    { score: Int
+    , username: String
+    }

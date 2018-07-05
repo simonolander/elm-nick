@@ -9,6 +9,7 @@ import Constants exposing (..)
 import Game exposing (..)
 import Game.Update exposing (..)
 import Random
+import RemoteData exposing (RemoteData(NotAsked))
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -48,6 +49,20 @@ update msg model =
 
         SinglePlayerSurvivalModeClicked ->
             updateOnSinglePlayerSurvivalModeClicked model
+
+        ReceiveScores webData ->
+            let
+                setScores webData game =
+                    { game
+                    | scoreboard = webData
+                    }
+            in
+                ( { model
+                  | game = Maybe.map (setScores webData) model.game
+                  }
+                , Cmd.none
+                )
+
 
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
@@ -171,7 +186,8 @@ updateOnSinglePlayerFreeModeClicked model =
             , numberOfDroppedFootballs = 0
             , gameMode = SinglePlayerFree
             , lives = Nothing
-            }
+            , scoreboard = NotAsked
+           }
         cmd = Cmd.batch
             [
             ]
@@ -191,7 +207,7 @@ updateOnSinglePlayerSurvivalModeClicked model =
             []
         lives =
             { max = 3
-            , current = 3
+            , current = 0
             }
         character =
             { lane = Left
@@ -216,6 +232,7 @@ updateOnSinglePlayerSurvivalModeClicked model =
             , numberOfDroppedFootballs = 0
             , gameMode = SinglePlayerSurvival
             , lives = Just lives
+            , scoreboard = NotAsked
             }
         cmd = Cmd.batch
             [
