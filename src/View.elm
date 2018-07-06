@@ -71,6 +71,7 @@ renderMenu settings menu =
                 [ UI.menuTitle [] "Single Player"
                 , UI.btn [ onClick (InitializeGame SinglePlayerSurvival)] "Survival"
                 , UI.btn [ onClick (InitializeGame SinglePlayerFree)] "Free Mode"
+                , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 
@@ -147,9 +148,11 @@ renderMenu settings menu =
                                 ]
                         )
                     )
+                , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick (InitializeGame MultiplayerCooperation)] "Cooperation"
                 , UI.btn [ onClick (InitializeGame LastManStanding)] "Last Man Standing"
                 , UI.btn [ onClick (InitializeGame MultiplayerFree)] "Free Mode"
+                , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 
@@ -160,5 +163,6 @@ renderMainMenu =
         [ UI.menuTitle [] "Main Menu"
         , UI.btn [ onClick SinglePlayerMenuClicked] "Single Player"
         , UI.btn [ onClick MultiplayerMenuClicked] "Multiplayer"
+        , styled div [ height (px 20) ] [] []
         , UI.btn [ onClick SettingsClicked] "Settings"
         ]

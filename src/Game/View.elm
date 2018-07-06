@@ -70,6 +70,8 @@ renderGame windowSize settings game =
                     UI.menu
                         [ UI.menuTitle [] "Paused"
                         , UI.btn [ onClick ResumeClicked] "Resume"
+                        , UI.btn [ onClick (InitializeGame game.gameMode)] "Restart"
+                        , styled div [ height (px 20) ] [] []
                         , UI.btn [ onClick MainMenuClicked] "Main Menu"
                         ]
                 GameOver ->
