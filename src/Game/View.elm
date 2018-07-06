@@ -126,7 +126,7 @@ renderHUD game =
 
 
         droppedBalls =
-            if game.numberOfDroppedFootballs > 0 && game.gameMode == SinglePlayerFree
+            if game.numberOfDroppedFootballs > 0 && (game.gameMode == SinglePlayerFree || game.gameMode == MultiplayerFree)
             then
                 styled div
                     [ alignSelf start

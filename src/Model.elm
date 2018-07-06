@@ -109,6 +109,7 @@ type alias Football =
 type GameMode =
     SinglePlayerSurvival
     | MultiplayerCooperation
+    | MultiplayerFree
     | LastManStanding
     | SinglePlayerFree
 

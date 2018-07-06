@@ -259,6 +259,8 @@ initializeGame gameMode model =
                     Just defaultLives
                 MultiplayerCooperation ->
                     Just defaultLives
+                MultiplayerFree ->
+                    Nothing
                 LastManStanding ->
                     Nothing
 
@@ -276,6 +278,8 @@ initializeGame gameMode model =
                 SinglePlayerSurvival ->
                     settingsToCharacters 2 Nothing [firstCharacterSetting, firstCharacterSetting]
                 MultiplayerCooperation ->
+                    settingsToCharacters model.settings.numberOfPlayers Nothing (Array.toList model.settings.characterSettings)
+                MultiplayerFree ->
                     settingsToCharacters model.settings.numberOfPlayers Nothing (Array.toList model.settings.characterSettings)
                 LastManStanding ->
                     settingsToCharacters model.settings.numberOfPlayers (Just defaultLives) (Array.toList model.settings.characterSettings)

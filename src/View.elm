@@ -148,6 +148,8 @@ renderMenu settings menu =
                         )
                     )
                 , UI.btn [ onClick (InitializeGame MultiplayerCooperation)] "Cooperation"
+                , UI.btn [ onClick (InitializeGame LastManStanding)] "Last Man Standing"
+                , UI.btn [ onClick (InitializeGame MultiplayerFree)] "Free Mode"
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 
