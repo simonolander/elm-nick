@@ -5,7 +5,7 @@ import Css exposing (..)
 import Game exposing (getGameCharacterTop, getGameSize)
 import Game.View exposing (renderGame)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (type_, value, selected)
+import Html.Styled.Attributes exposing (type_, value, selected, title)
 import Html.Styled.Events exposing (onClick, onInput)
 import Model exposing (..)
 import Svg.Styled exposing (Svg)
@@ -82,10 +82,24 @@ renderMenu settings menu =
                     [ displayFlex
                     , flexDirection row
                     , justifyContent spaceBetween
+                    , width (pct 100)
                     ]
                     []
-                    [ select
-                        [ onInput (\ intString -> UpdateNumberOfPlayers (Result.withDefault 2 (String.toInt intString))) ]
+                    [ styled select
+                        [ fontSize (px 18)
+                        , color (rgb 51 51 51)
+                        , border3 (px 1) solid (rgb 191 191 191)
+                        , borderRadius (px 8)
+                        , padding2 (px 5) (px 10)
+                        , height (px 48)
+                        , backgroundColor (rgb 255 255 255)
+                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                        , marginBottom (px 4)
+                        , flex (int 1)
+                        ]
+                        [ onInput (\ intString -> UpdateNumberOfPlayers (Result.withDefault 2 (String.toInt intString)))
+                        , title "Number of players"
+                        ]
                         ( [ (2, "Two Players")
                           , (3, "Three Players")
                           , (4, "Four Players")
@@ -119,10 +133,24 @@ renderMenu settings menu =
                                 [ displayFlex
                                 , flexDirection row
                                 , justifyContent spaceBetween
+                                , marginBottom (px 4)
                                 ]
                                 []
-                                [ select
-                                    [ onInput (\ intString -> UpdatePlayerControl index Left (Result.withDefault 37 (String.toInt intString))) ]
+                                [ styled select
+                                    [ fontSize (px 18)
+                                    , color (rgb 51 51 51)
+                                    , border3 (px 1) solid (rgb 191 191 191)
+                                    , borderRadius (px 8)
+                                    , padding2 (px 5) (px 10)
+                                    , height (px 48)
+                                    , backgroundColor (rgb 255 255 255)
+                                    , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                                    , flex (int 1)
+                                    , marginRight (px 8)
+                                    ]
+                                    [ onInput (\ intString -> UpdatePlayerControl index Left (Result.withDefault 37 (String.toInt intString)))
+                                    , title ("Left key for player " ++ toString (index + 1))
+                                    ]
                                     ( goodKeys
                                         |> List.map
                                             (\(num, label) ->
@@ -133,8 +161,20 @@ renderMenu settings menu =
                                                     [ text label ]
                                             )
                                     )
-                                , select
-                                    [ onInput (\ intString -> UpdatePlayerControl index Right (Result.withDefault 37 (String.toInt intString))) ]
+                                , styled select
+                                    [ fontSize (px 18)
+                                    , color (rgb 51 51 51)
+                                    , border3 (px 1) solid (rgb 191 191 191)
+                                    , borderRadius (px 8)
+                                    , padding2 (px 5) (px 10)
+                                    , height (px 48)
+                                    , backgroundColor (rgb 255 255 255)
+                                    , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                                    , flex (int 1)
+                                    ]
+                                    [ onInput (\ intString -> UpdatePlayerControl index Right (Result.withDefault 37 (String.toInt intString)))
+                                    , title ("Right key for player " ++ toString (index + 1))
+                                    ]
                                     ( goodKeys
                                         |> List.map
                                             (\(num, label) ->
