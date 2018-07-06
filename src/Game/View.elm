@@ -11,7 +11,7 @@ import RemoteData exposing (RemoteData(NotAsked))
 import Svg.Styled
 import Svg.Styled.Attributes
 import UI
-import Util exposing (filterMaybe)
+import Util exposing (filterMaybe, keyCodeToString)
 import Window exposing (Size)
 
 
@@ -170,6 +170,61 @@ renderHUD game =
             else
                 text ""
 
+        controls =
+            if game.gameTime < 4
+                then
+                    let
+                        opacity_ =
+                            if game.gameTime < 3 then
+                                1
+                            else
+                                1 - (game.gameTime - 3)^2
+                    in
+                        styled div
+                            [ fontSize (pc 2)
+                            , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                            , fontWeight bold
+                            , fontFamily sansSerif
+                            , color (rgb 255 255 255)
+                            , opacity (num opacity_)
+                            , displayFlex
+                            , flexDirection row
+                            , justifyContent spaceAround
+                            , marginBottom (pct 9)
+                            ]
+                            []
+                            ( game.characters
+                                |> List.map
+                                    (\ character ->
+                                        styled div
+                                            [ displayFlex
+                                            , flexDirection row
+                                            , justifyContent spaceBetween
+                                            ]
+                                            []
+                                            [ styled div
+                                                [ backgroundColor (rgb 100 100 100)
+                                                , padding (px 10)
+                                                , borderRadius (px 10)
+                                                , marginRight (px 10)
+                                                ]
+                                                []
+                                                [ text ("← " ++ keyCodeToString character.leftKeyCode) ]
+                                            , styled div
+                                                [ backgroundColor (rgb 100 100 100)
+                                                , padding (px 10)
+                                                , borderRadius (px 10)
+                                                , marginLeft (px 10)
+                                                ]
+                                                []
+                                                [ text (keyCodeToString character.rightKeyCode ++ " →") ]
+                                            ]
+                                    )
+
+                            )
+                else
+                    text ""
+
         lives =
             case game.lives of
                 Just lives ->
@@ -218,7 +273,8 @@ renderHUD game =
         bottomRow =
             div
                 []
-                []
+                [ controls
+                ]
     in
         styled div
             [ position fixed
