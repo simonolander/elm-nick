@@ -149,6 +149,7 @@ renderMenu settings menu =
                                 ]
                         )
                     )
+                , UI.btn [ onClick MultiplayerCooperationModeClicked] "Cooperation"
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 

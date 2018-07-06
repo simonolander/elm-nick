@@ -181,7 +181,7 @@ renderHUD game =
                                 1 - (game.gameTime - 3)^2
                     in
                         styled div
-                            [ fontSize (pc 2)
+                            [ fontSize large
                             , textShadow3 (px 1) (px 2) (rgb 0 0 0)
                             , fontWeight bold
                             , fontFamily sansSerif
@@ -199,7 +199,8 @@ renderHUD game =
                                         styled div
                                             [ displayFlex
                                             , flexDirection row
-                                            , justifyContent spaceBetween
+                                            , justifyContent center
+                                            , width (pct (95 / ((toFloat << List.length) game.characters)))
                                             ]
                                             []
                                             [ styled div

@@ -72,6 +72,7 @@ type Msg =
     | MultiplayerMenuClicked
     | SinglePlayerFreeModeClicked
     | SinglePlayerSurvivalModeClicked
+    | MultiplayerCooperationModeClicked
     | ReceiveScores (WebData (List Score))
     | UpdateUsername String
     | UpdateNumberOfPlayers Int
@@ -109,7 +110,7 @@ type alias Football =
 
 type GameMode =
     SinglePlayerSurvival
-    | Collaboration
+    | MultiplayerCooperation
     | LastManStanding
     | SinglePlayerFree
 

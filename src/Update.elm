@@ -11,6 +11,7 @@ import Game.Update exposing (..)
 import Random
 import RemoteData exposing (RemoteData(Loading, NotAsked))
 import Rest exposing (postScore)
+import Util exposing (settingsToCharacters)
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -53,6 +54,9 @@ update msg model =
 
         SinglePlayerSurvivalModeClicked ->
             updateOnSinglePlayerSurvivalModeClicked model
+
+        MultiplayerCooperationModeClicked ->
+            updateOnMultiplayerCooperationModeClicked model
 
         ReceiveScores webData ->
             let
@@ -330,3 +334,38 @@ updateOnSinglePlayerSurvivalModeClicked model =
         , cmd
         )
 
+
+updateOnMultiplayerCooperationModeClicked : Model -> (Model, Cmd Msg)
+updateOnMultiplayerCooperationModeClicked model =
+    let
+        settings = model.settings
+        footballs =
+            []
+        lives =
+            { max = 3
+            , current = 3
+            }
+        characters = settingsToCharacters model.settings
+        game =
+            { score = 0
+            , footballs = footballs
+            , characters = characters
+            , gameState = Running
+            , gameTime = 0
+            , footballGenerationTime = settings.footballGenerationTime
+            , remainingFootballGenerationTime = 3
+            , numberOfDroppedFootballs = 0
+            , gameMode = MultiplayerCooperation
+            , lives = Just lives
+            , scoreboard = NotAsked
+            }
+        cmd = Cmd.batch
+            [
+            ]
+    in
+        ( { model
+          | game = Just game
+          , menu = Nothing
+          }
+        , cmd
+        )

@@ -1,7 +1,11 @@
 module Util exposing (..)
 
-
+import Array
+import Constants exposing (characterIdle)
 import Keyboard exposing (KeyCode)
+import Model exposing (..)
+
+
 maybeCons : Maybe a -> List a -> List a
 maybeCons maybe list =
     case maybe of
@@ -169,3 +173,21 @@ goodKeys =
     , (56, "8")
     , (57, "9")
     ]
+
+
+settingsToCharacters : Settings -> List Character
+settingsToCharacters settings =
+    let
+        characterSettingToCharacter index setting =
+            { lane = Left
+            , leftKeyCode = setting.leftKeyCode
+            , rightKeyCode = setting.rightKeyCode
+            , spriteAnimation = characterIdle
+            , boardIndex = index
+            , lives = Nothing
+            }
+    in
+        settings.characterSettings
+        |> Array.toList
+        |> List.take settings.numberOfPlayers
+        |> List.indexedMap characterSettingToCharacter
