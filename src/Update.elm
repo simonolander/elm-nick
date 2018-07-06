@@ -99,6 +99,43 @@ update msg model =
                 , Cmd.none
                 )
 
+        UpdatePlayerControl index lane keyCode ->
+            let
+                settings =
+                    model.settings
+
+                characterSettings = settings.characterSettings
+
+                newCharacterSettings =
+                    case Array.get index characterSettings of
+                        Just setting ->
+                            let
+                                newSetting =
+                                    case lane of
+                                        Left ->
+                                            { setting
+                                            | leftKeyCode = keyCode
+                                            }
+                                        Right ->
+                                            { setting
+                                            | rightKeyCode = keyCode
+                                            }
+                            in
+                                Array.set index newSetting characterSettings
+                        Nothing ->
+                            characterSettings
+
+                newSettings =
+                    { settings
+                    | characterSettings = newCharacterSettings
+                    }
+            in
+                ( { model
+                  | settings = newSettings
+                  }
+                , Cmd.none
+                )
+
         PostScore gameMode score ->
             let
                 setScores webData game =

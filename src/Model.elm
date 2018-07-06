@@ -75,6 +75,7 @@ type Msg =
     | ReceiveScores (WebData (List Score))
     | UpdateUsername String
     | UpdateNumberOfPlayers Int
+    | UpdatePlayerControl Int Lane KeyCode
     | PostScore GameMode Score
 
 type Lane = Left | Right
@@ -118,7 +119,7 @@ type alias CharacterSetting =
     }
 
 type alias Settings =
-    { characterSettings: List CharacterSetting
+    { characterSettings: Array CharacterSetting
     , footballGenerationTime: Float
     , username: String
     , numberOfPlayers: Int

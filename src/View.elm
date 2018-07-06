@@ -1,5 +1,6 @@
 module View exposing (..)
 
+import Array
 import Css exposing (..)
 import Game exposing (getGameCharacterTop, getGameSize)
 import Game.View exposing (renderGame)
@@ -11,7 +12,7 @@ import Svg.Styled exposing (Svg)
 import Svg.Styled.Attributes
 import Constants exposing (..)
 import UI
-import Util exposing (filterMaybe)
+import Util exposing (filterMaybe, goodKeys)
 import Window exposing (Size)
 
 view : Model -> Html Msg
@@ -103,6 +104,51 @@ renderMenu settings menu =
 
                         )
                     ]
+                , styled div
+                    [ displayFlex
+                    , flexDirection column
+                    , width (pct 100)
+                    ]
+                    []
+                    (
+                    settings.characterSettings
+                    |> Array.toList
+                    |> List.take settings.numberOfPlayers
+                    |> List.indexedMap
+                        (\index setting ->
+                            styled div
+                                [ displayFlex
+                                , flexDirection row
+                                , justifyContent spaceBetween
+                                ]
+                                []
+                                [ select
+                                    [ onInput (\ intString -> UpdatePlayerControl index Left (Result.withDefault 37 (String.toInt intString))) ]
+                                    ( goodKeys
+                                        |> List.map
+                                            (\(num, label) ->
+                                                option
+                                                    [ value (toString num)
+                                                    , selected (num == setting.leftKeyCode)
+                                                    ]
+                                                    [ text label ]
+                                            )
+                                    )
+                                , select
+                                    [ onInput (\ intString -> UpdatePlayerControl index Right (Result.withDefault 37 (String.toInt intString))) ]
+                                    ( goodKeys
+                                        |> List.map
+                                            (\(num, label) ->
+                                                option
+                                                    [ value (toString num)
+                                                    , selected (num == setting.rightKeyCode)
+                                                    ]
+                                                    [ text label ]
+                                            )
+                                    )
+                                ]
+                        )
+                    )
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 
