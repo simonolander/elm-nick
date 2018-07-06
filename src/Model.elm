@@ -72,6 +72,8 @@ type Msg =
     | SinglePlayerFreeModeClicked
     | SinglePlayerSurvivalModeClicked
     | ReceiveScores (WebData (List Score))
+    | UpdateUsername String
+    | PostScore GameMode Score
 
 type Lane = Left | Right
 

@@ -2,7 +2,8 @@ module UI exposing (..)
 
 import Css exposing (..)
 import Html.Styled exposing (..)
-import Model exposing (Score)
+import Html.Styled.Events exposing (onInput)
+import Model exposing (Msg(UpdateUsername), Score)
 import RemoteData exposing (WebData, RemoteData(..))
 
 theme : { secondary : Color, primary : Color }
@@ -18,9 +19,6 @@ btn attributes content =
             [ hover
                 [ backgroundColor theme.secondary
                 ]
---            , focus
---                [ backgroundColor theme.secondary
---                ]
             , width (pct 100)
             , fontSize large
             , color (rgb 255 255 255)
@@ -94,7 +92,7 @@ menu content =
         ]
 
 
-scoreboard : WebData (List Score) -> Html msg
+scoreboard : WebData (List Score) -> Html Msg
 scoreboard webData =
     styled div
         [ width (pct 100)
@@ -116,10 +114,17 @@ scoreboard webData =
         []
         ( case webData of
             NotAsked ->
-                [ styled span
-                    [textAlign center]
+                [ styled div
+                    [ displayFlex
+                    , overflow auto
+                    , justifyContent spaceBetween
+                    , flexDirection row
+                    , flexShrink (int 0)
+                    ]
                     []
-                    [text "Request not actually sent"]
+                    [ input [ onInput UpdateUsername ] []
+                    , btn [] "Send"
+                    ]
                 ]
             Loading ->
                 [ styled span

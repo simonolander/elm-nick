@@ -9,8 +9,8 @@ import Json.Encode
 
 {-| The url to our web server where we host the scores
 -}
-url : String
-url = "https://97oxr397sj.execute-api.us-west-2.amazonaws.com/staging/scores"
+baseUrl : String
+baseUrl = "https://97oxr397sj.execute-api.us-west-2.amazonaws.com/staging/scores"
 
 
 {-| A json decoder is a function-ish that lets us extract data form json strings.
@@ -32,18 +32,24 @@ scoreDecoder =
 
 {-| Posts a score to the server, and returns a list of the new scores.
 -}
-postScore : Score -> Cmd Msg
-postScore { score, username } =
+postScore : GameMode -> Score -> Cmd Msg
+postScore gameMode { score, username } =
     let
+        game =
+            "elm-nick " ++ (toString gameMode)
+
         object =
             Json.Encode.object
                 [ ("score", Json.Encode.int score)
                 , ("username", Json.Encode.string username)
-                , ("game", Json.Encode.string "elm-nick")
+                , ("game", Json.Encode.string game)
                 ]
         body =
             Http.jsonBody
                 object
+
+        url =
+            baseUrl
     in
         Http.post url body (Json.Decode.list scoreDecoder)
             |> RemoteData.sendRequest
@@ -54,6 +60,6 @@ postScore { score, username } =
 -}
 getScores : Cmd Msg
 getScores =
-    Http.get (url ++ "?game=elm-nick") (Json.Decode.list scoreDecoder)
+    Http.get (baseUrl ++ "?game=elm-nick") (Json.Decode.list scoreDecoder)
         |> RemoteData.sendRequest
         |> Cmd.map ReceiveScores

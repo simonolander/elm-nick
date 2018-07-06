@@ -13,7 +13,7 @@ import Constants exposing (..)
 import Game exposing (..)
 import PageVisibility exposing (Visibility)
 import Random
-import RemoteData exposing (RemoteData(Loading))
+import RemoteData exposing (RemoteData(Loading, NotAsked))
 import Rest exposing (postScore)
 import Time exposing (Time)
 import Util exposing (..)
@@ -34,11 +34,11 @@ updateGameOnTick diff game =
         |> noCmd (updateSpriteAnimations diff)
         |> chain (updateFootballGenerationTimer diff)
         |> noCmd (updateGameTime diff)
-        |> chain checkForGameOver
+        |> noCmd checkForGameOver
         |> batch
 
 
-checkForGameOver : Game -> (Game, List (Cmd Msg))
+checkForGameOver : Game -> Game
 checkForGameOver game =
     let
         outOfLives =
@@ -53,23 +53,11 @@ checkForGameOver game =
             else
                 game.gameState
 
-        cmds =
-            if gameState == GameOver
-            then
-                [ postScore
-                    { score = game.score
-                    , username = "anonette"
-                    }
-                ]
-            else
-                []
     in
-        ( { game
-          | gameState = gameState
-          , scoreboard = Loading
-          }
-        , cmds
-        )
+        { game
+        | gameState = gameState
+        , scoreboard = NotAsked
+        }
 
 nickFootballs : Time -> Game -> (Game, List (Cmd Msg))
 nickFootballs diff game =

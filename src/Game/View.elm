@@ -4,9 +4,10 @@ import Constants exposing (..)
 import Css exposing (..)
 import Game exposing (..)
 import Html.Styled exposing (..)
-import Html.Styled.Events exposing (onClick)
-import Html.Styled.Attributes
+import Html.Styled.Events exposing (onClick, onInput)
+import Html.Styled.Attributes exposing (value, type_, action)
 import Model exposing (..)
+import RemoteData exposing (RemoteData(NotAsked))
 import Svg.Styled
 import Svg.Styled.Attributes
 import UI
@@ -14,8 +15,8 @@ import Util exposing (filterMaybe)
 import Window exposing (Size)
 
 
-renderGame : Size -> Game -> Html Msg
-renderGame windowSize game =
+renderGame : Size -> Settings -> Game -> Html Msg
+renderGame windowSize settings game =
     let
         w = toFloat windowSize.width
         h = toFloat windowSize.height
@@ -74,7 +75,24 @@ renderGame windowSize game =
                 GameOver ->
                     UI.menu
                         [ UI.menuTitle [] ("Score " ++ (toString game.score))
-                        , UI.scoreboard game.scoreboard
+                        , if game.scoreboard == NotAsked
+                            then
+                                form
+                                    [ action "#"]
+                                    [ input
+                                        [ value settings.username
+                                        , onInput UpdateUsername
+                                        ]
+                                        []
+                                    , input
+                                        [ type_ "submit"
+                                        , onClick (PostScore game.gameMode { score = game.score, username = settings.username })
+                                        , value "Send"
+                                        ]
+                                        []
+                                    ]
+                            else
+                                UI.scoreboard game.scoreboard
                         , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Replay"
                         , UI.btn [ onClick MainMenuClicked] "Main Menu"
                         ]

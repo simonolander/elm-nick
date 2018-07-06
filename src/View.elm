@@ -30,7 +30,7 @@ view model =
 
         gameDiv =
             model.game
-            |> Maybe.map (renderGame model.windowSize)
+            |> Maybe.map (renderGame model.windowSize model.settings)
             |> Maybe.withDefault (div [] [])
 
 

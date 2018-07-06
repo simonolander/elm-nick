@@ -9,7 +9,8 @@ import Constants exposing (..)
 import Game exposing (..)
 import Game.Update exposing (..)
 import Random
-import RemoteData exposing (RemoteData(NotAsked))
+import RemoteData exposing (RemoteData(Loading, NotAsked))
+import Rest exposing (postScore)
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -63,6 +64,34 @@ update msg model =
                 , Cmd.none
                 )
 
+        UpdateUsername username ->
+            let
+                settings =
+                    model.settings
+
+                newSettings =
+                    { settings
+                    | username = username
+                    }
+            in
+                ( { model
+                  | settings = newSettings
+                  }
+                , Cmd.none
+                )
+
+        PostScore gameMode score ->
+            let
+                setScores webData game =
+                    { game
+                    | scoreboard = webData
+                    }
+            in
+                ( { model
+                  | game = Maybe.map (setScores Loading) model.game
+                  }
+                , postScore gameMode score
+                )
 
 
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
