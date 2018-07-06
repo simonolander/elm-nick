@@ -45,6 +45,9 @@ update msg model =
         SinglePlayerMenuClicked ->
             ( { model | menu = Just SinglePlayerMenu }, Cmd.none)
 
+        MultiplayerMenuClicked ->
+            ( { model | menu = Just MultiPlayerMenu }, Cmd.none)
+
         SinglePlayerFreeModeClicked ->
             updateOnSinglePlayerFreeModeClicked model
 

@@ -72,7 +72,14 @@ renderMenu menu =
                 , UI.btn [ onClick SinglePlayerFreeModeClicked] "Free Mode"
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
-        other -> UI.menu [ UI.menuTitle [] (toString other)]
+
+        MultiPlayerMenu ->
+            UI.menu
+                [ UI.menuTitle [] "Multiplayer"
+                , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Cooperative"
+                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Last man standing"
+                , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                ]
 
 
 renderMainMenu : Html Msg
@@ -80,5 +87,6 @@ renderMainMenu =
     UI.menu
         [ UI.menuTitle [] "Main Menu"
         , UI.btn [ onClick SinglePlayerMenuClicked] "Single Player"
+        , UI.btn [ onClick MultiplayerMenuClicked] "Multiplayer"
         , UI.btn [ onClick SettingsClicked] "Settings"
         ]

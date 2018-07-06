@@ -69,6 +69,7 @@ type Msg =
     | MainMenuClicked
     | SettingsClicked
     | SinglePlayerMenuClicked
+    | MultiplayerMenuClicked
     | SinglePlayerFreeModeClicked
     | SinglePlayerSurvivalModeClicked
     | ReceiveScores (WebData (List Score))
