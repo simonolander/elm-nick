@@ -79,14 +79,50 @@ renderGame windowSize settings game =
                         [ UI.menuTitle [] ("Score " ++ (toString game.score))
                         , if game.scoreboard == NotAsked
                             then
-                                form
+                                styled form
+                                    [ width (pct 100)
+                                    , displayFlex
+                                    , justifyContent spaceBetween
+                                    ]
                                     [ action "#"]
-                                    [ input
+                                    [ styled input
+                                        [ fontSize (px 18)
+                                        , color (rgb 51 51 51)
+                                        , border3 (px 1) solid (rgb 191 191 191)
+                                        , borderRadius (px 8)
+                                        , padding2 (px 5) (px 10)
+                                        , height (px 48)
+                                        , backgroundColor (rgb 255 255 255)
+                                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                                        , flex (int 1)
+                                        , marginRight (px 8)
+                                        ]
                                         [ value settings.username
                                         , onInput UpdateUsername
                                         ]
                                         []
-                                    , input
+                                    , styled input
+                                        [ hover
+                                            [ backgroundColor UI.secondaryTheme
+                                            ]
+                                        , fontSize large
+                                        , color (rgb 255 255 255)
+                                        , borderRadius (px 8)
+                                        , cursor pointer
+                                        , height (px 60)
+                                        , lineHeight (px 57)
+                                        , fontWeight bold
+                                        , backgroundColor UI.primaryTheme
+                                        , padding2 (px 0) (px 16)
+                                        , border3 (px 1) solid UI.primaryTheme
+                                        , borderBottom3 (px 3) solid UI.secondaryTheme
+                                        , display inlineBlock
+                                        , flexShrink (int 0)
+                                        , textAlign center
+                                        , textDecoration none
+                                        , backgroundImage none
+                                        , textShadow none
+                                        ]
                                         [ type_ "submit"
                                         , onClick (PostScore game.gameMode { score = game.score, username = settings.username })
                                         , value "Send"
@@ -95,6 +131,7 @@ renderGame windowSize settings game =
                                     ]
                             else
                                 UI.scoreboard game.scoreboard
+                        , styled div [ height (px 20) ] [] []
                         , UI.btn [ onClick (InitializeGame game.gameMode)] "Replay"
                         , UI.btn [ onClick MainMenuClicked] "Main Menu"
                         ]

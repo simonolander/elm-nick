@@ -249,7 +249,7 @@ initializeGame gameMode model =
             []
         defaultLives =
             { max = 3
-            , current = 3
+            , current = 0
             }
         lives =
             case gameMode of

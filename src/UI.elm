@@ -6,18 +6,20 @@ import Html.Styled.Events exposing (onInput)
 import Model exposing (Msg(UpdateUsername), Score)
 import RemoteData exposing (WebData, RemoteData(..))
 
-theme : { secondary : Color, primary : Color }
-theme =
-    { primary = hex "146aff"
-    , secondary = hex "004cc9"
-    }
+primaryTheme : Color
+primaryTheme =
+    hex "146aff"
+
+secondaryTheme : Color
+secondaryTheme =
+    hex "004cc9"
 
 btn : List (Attribute msg) -> String -> Html msg
 btn attributes content =
     styled
         button
             [ hover
-                [ backgroundColor theme.secondary
+                [ backgroundColor secondaryTheme
                 ]
             , width (pct 100)
             , fontSize large
@@ -27,10 +29,10 @@ btn attributes content =
             , height (px 60)
             , lineHeight (px 57)
             , fontWeight bold
-            , backgroundColor theme.primary
+            , backgroundColor primaryTheme
             , padding2 (px 0) (px 16)
-            , border3 (px 1) solid theme.primary
-            , borderBottom3 (px 3) solid theme.secondary
+            , border3 (px 1) solid primaryTheme
+            , borderBottom3 (px 3) solid secondaryTheme
             , display inlineBlock
             , flexShrink (int 0)
             , textAlign center
@@ -97,10 +99,13 @@ scoreboard webData =
     styled div
         [ width (pct 100)
         , maxHeight (pct 50)
+        , minHeight (px 55)
         , borderRadius (px 10)
         , padding (px 10)
         , boxSizing borderBox
         , backgroundColor (rgba 200 200 255 0.5)
+        , border3 (px 1) solid (rgb 100 100 255)
+        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 100 100 255)
         , displayFlex
         , overflow auto
         , flexDirection column
