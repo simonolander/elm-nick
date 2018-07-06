@@ -31,6 +31,21 @@ init =
             [ { leftKeyCode = 37
               , rightKeyCode = 39
               }
+            , { leftKeyCode = 16
+              , rightKeyCode = 17
+              }
+            , { leftKeyCode = 18
+              , rightKeyCode = 91
+              }
+            , { leftKeyCode = 49
+              , rightKeyCode = 50
+              }
+            , { leftKeyCode = 78
+              , rightKeyCode = 77
+              }
+            , { leftKeyCode = 79
+              , rightKeyCode = 80
+              }
             ]
         settings =
             { characterSettings = characterSettings
