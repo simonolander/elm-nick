@@ -69,16 +69,14 @@ renderMenu settings menu =
         SinglePlayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Single Player"
-                , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Survival"
-                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Free Mode"
+                , UI.btn [ onClick (InitializeGame SinglePlayerSurvival)] "Survival"
+                , UI.btn [ onClick (InitializeGame SinglePlayerFree)] "Free Mode"
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 
         MultiPlayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Multiplayer"
---                , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Cooperative"
---                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Last man standing"
                 , styled div
                     [ displayFlex
                     , flexDirection row
@@ -149,7 +147,7 @@ renderMenu settings menu =
                                 ]
                         )
                     )
-                , UI.btn [ onClick MultiplayerCooperationModeClicked] "Cooperation"
+                , UI.btn [ onClick (InitializeGame MultiplayerCooperation)] "Cooperation"
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 

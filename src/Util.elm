@@ -175,8 +175,8 @@ goodKeys =
     ]
 
 
-settingsToCharacters : Settings -> List Character
-settingsToCharacters settings =
+settingsToCharacters : Int -> Maybe Lives -> List CharacterSetting -> List Character
+settingsToCharacters numberOfCharacters lives settings =
     let
         characterSettingToCharacter index setting =
             { lane = Left
@@ -184,10 +184,9 @@ settingsToCharacters settings =
             , rightKeyCode = setting.rightKeyCode
             , spriteAnimation = characterIdle
             , boardIndex = index
-            , lives = Nothing
+            , lives = lives
             }
     in
-        settings.characterSettings
-        |> Array.toList
-        |> List.take settings.numberOfPlayers
+        settings
+        |> List.take numberOfCharacters
         |> List.indexedMap characterSettingToCharacter

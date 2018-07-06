@@ -93,7 +93,7 @@ renderGame windowSize settings game =
                                     ]
                             else
                                 UI.scoreboard game.scoreboard
-                        , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Replay"
+                        , UI.btn [ onClick (InitializeGame game.gameMode)] "Replay"
                         , UI.btn [ onClick MainMenuClicked] "Main Menu"
                         ]
                 Running ->

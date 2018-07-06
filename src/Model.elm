@@ -70,9 +70,7 @@ type Msg =
     | SettingsClicked
     | SinglePlayerMenuClicked
     | MultiplayerMenuClicked
-    | SinglePlayerFreeModeClicked
-    | SinglePlayerSurvivalModeClicked
-    | MultiplayerCooperationModeClicked
+    | InitializeGame GameMode
     | ReceiveScores (WebData (List Score))
     | UpdateUsername String
     | UpdateNumberOfPlayers Int

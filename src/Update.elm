@@ -49,14 +49,8 @@ update msg model =
         MultiplayerMenuClicked ->
             ( { model | menu = Just MultiPlayerMenu }, Cmd.none)
 
-        SinglePlayerFreeModeClicked ->
-            updateOnSinglePlayerFreeModeClicked model
-
-        SinglePlayerSurvivalModeClicked ->
-            updateOnSinglePlayerSurvivalModeClicked model
-
-        MultiplayerCooperationModeClicked ->
-            updateOnMultiplayerCooperationModeClicked model
+        InitializeGame gameMode ->
+            initializeGame gameMode model
 
         ReceiveScores webData ->
             let
@@ -246,106 +240,46 @@ updateOnMainMenuClicked model =
     , Cmd.none
     )
 
-updateOnSinglePlayerFreeModeClicked : Model -> (Model, Cmd Msg)
-updateOnSinglePlayerFreeModeClicked model =
+
+initializeGame : GameMode -> Model -> (Model, Cmd Msg)
+initializeGame gameMode model =
     let
         settings = model.settings
         footballs =
             []
-        character =
-            { lane = Left
-            , leftKeyCode = 37
-            , rightKeyCode = 39
-            , spriteAnimation = characterIdle
-            , boardIndex = 0
-            , lives = Nothing
-            }
-        characters =
-            [ character
-            , character
-            ] |> List.indexedMap (\ index character -> { character | boardIndex = index })
-        game =
-            { score = 0
-            , footballs = footballs
-            , characters = characters
-            , gameState = Running
-            , gameTime = 0
-            , footballGenerationTime = settings.footballGenerationTime
-            , remainingFootballGenerationTime = 3
-            , numberOfDroppedFootballs = 0
-            , gameMode = SinglePlayerFree
-            , lives = Nothing
-            , scoreboard = NotAsked
-           }
-        cmd = Cmd.batch
-            [
-            ]
-    in
-        ( { model
-          | game = Just game
-          , menu = Nothing
-          }
-        , cmd
-        )
-
-updateOnSinglePlayerSurvivalModeClicked : Model -> (Model, Cmd Msg)
-updateOnSinglePlayerSurvivalModeClicked model =
-    let
-        settings = model.settings
-        footballs =
-            []
-        lives =
-            { max = 3
-            , current = 0
-            }
-        character =
-            { lane = Left
-            , leftKeyCode = 37
-            , rightKeyCode = 39
-            , spriteAnimation = characterIdle
-            , boardIndex = 0
-            , lives = Nothing
-            }
-        characters =
-            [ character
-            , character
-            ] |> List.indexedMap (\ index character -> { character | boardIndex = index })
-        game =
-            { score = 0
-            , footballs = footballs
-            , characters = characters
-            , gameState = Running
-            , gameTime = 0
-            , footballGenerationTime = settings.footballGenerationTime
-            , remainingFootballGenerationTime = 3
-            , numberOfDroppedFootballs = 0
-            , gameMode = SinglePlayerSurvival
-            , lives = Just lives
-            , scoreboard = NotAsked
-            }
-        cmd = Cmd.batch
-            [
-            ]
-    in
-        ( { model
-          | game = Just game
-          , menu = Nothing
-          }
-        , cmd
-        )
-
-
-updateOnMultiplayerCooperationModeClicked : Model -> (Model, Cmd Msg)
-updateOnMultiplayerCooperationModeClicked model =
-    let
-        settings = model.settings
-        footballs =
-            []
-        lives =
+        defaultLives =
             { max = 3
             , current = 3
             }
-        characters = settingsToCharacters model.settings
+        lives =
+            case gameMode of
+                SinglePlayerFree ->
+                    Nothing
+                SinglePlayerSurvival ->
+                    Just defaultLives
+                MultiplayerCooperation ->
+                    Just defaultLives
+                LastManStanding ->
+                    Nothing
+
+        firstCharacterSetting =
+            Array.get 0 model.settings.characterSettings
+            |> Maybe.withDefault
+                { leftKeyCode = 37
+                , rightKeyCode = 39
+                }
+
+        characters =
+            case gameMode of
+                SinglePlayerFree ->
+                    settingsToCharacters 2 Nothing [firstCharacterSetting, firstCharacterSetting]
+                SinglePlayerSurvival ->
+                    settingsToCharacters 2 Nothing [firstCharacterSetting, firstCharacterSetting]
+                MultiplayerCooperation ->
+                    settingsToCharacters model.settings.numberOfPlayers Nothing (Array.toList model.settings.characterSettings)
+                LastManStanding ->
+                    settingsToCharacters model.settings.numberOfPlayers (Just defaultLives) (Array.toList model.settings.characterSettings)
+
         game =
             { score = 0
             , footballs = footballs
@@ -355,17 +289,14 @@ updateOnMultiplayerCooperationModeClicked model =
             , footballGenerationTime = settings.footballGenerationTime
             , remainingFootballGenerationTime = 3
             , numberOfDroppedFootballs = 0
-            , gameMode = MultiplayerCooperation
-            , lives = Just lives
+            , gameMode = gameMode
+            , lives = lives
             , scoreboard = NotAsked
             }
-        cmd = Cmd.batch
-            [
-            ]
     in
         ( { model
-          | game = Just game
-          , menu = Nothing
+          | menu = Nothing
+          , game = Just game
           }
-        , cmd
+        , Cmd.none
         )
