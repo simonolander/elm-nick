@@ -83,6 +83,22 @@ update msg model =
                 , Cmd.none
                 )
 
+        UpdateNumberOfPlayers numberOfPlayers ->
+            let
+                settings =
+                    model.settings
+
+                newSettings =
+                    { settings
+                    | numberOfPlayers = numberOfPlayers
+                    }
+            in
+                ( { model
+                  | settings = newSettings
+                  }
+                , Cmd.none
+                )
+
         PostScore gameMode score ->
             let
                 setScores webData game =

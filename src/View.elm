@@ -4,8 +4,8 @@ import Css exposing (..)
 import Game exposing (getGameCharacterTop, getGameSize)
 import Game.View exposing (renderGame)
 import Html.Styled exposing (..)
-import Html.Styled.Attributes exposing (style)
-import Html.Styled.Events exposing (onClick)
+import Html.Styled.Attributes exposing (type_, value, selected)
+import Html.Styled.Events exposing (onClick, onInput)
 import Model exposing (..)
 import Svg.Styled exposing (Svg)
 import Svg.Styled.Attributes
@@ -36,7 +36,7 @@ view model =
 
         menuDiv =
             model.menu
-            |> Maybe.map renderMenu
+            |> Maybe.map (renderMenu model.settings)
             |> Maybe.withDefault (div [] [])
     in
         styled div
@@ -54,8 +54,8 @@ view model =
             ]
 
 
-renderMenu : Menu -> Html Msg
-renderMenu menu =
+renderMenu : Settings -> Menu -> Html Msg
+renderMenu settings menu =
     case menu of
         MainMenu ->
             renderMainMenu
@@ -76,8 +76,33 @@ renderMenu menu =
         MultiPlayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Multiplayer"
-                , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Cooperative"
-                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Last man standing"
+--                , UI.btn [ onClick SinglePlayerSurvivalModeClicked] "Cooperative"
+--                , UI.btn [ onClick SinglePlayerFreeModeClicked] "Last man standing"
+                , styled div
+                    [ displayFlex
+                    , flexDirection row
+                    , justifyContent spaceBetween
+                    ]
+                    []
+                    [ select
+                        [ onInput (\ intString -> UpdateNumberOfPlayers (Result.withDefault 2 (String.toInt intString))) ]
+                        ( [ (2, "Two Players")
+                          , (3, "Three Players")
+                          , (4, "Four Players")
+                          , (5, "Five Players")
+                          , (6, "Six Players")
+                          ]
+                          |> List.map
+                              (\(num, label) ->
+                                  option
+                                      [ value (toString num)
+                                      , selected (num == settings.numberOfPlayers)
+                                      ]
+                                      [ text label ]
+                              )
+
+                        )
+                    ]
                 , UI.btn [ onClick MainMenuClicked] "Main Menu"
                 ]
 

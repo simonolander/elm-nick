@@ -74,6 +74,7 @@ type Msg =
     | SinglePlayerSurvivalModeClicked
     | ReceiveScores (WebData (List Score))
     | UpdateUsername String
+    | UpdateNumberOfPlayers Int
     | PostScore GameMode Score
 
 type Lane = Left | Right
@@ -120,6 +121,7 @@ type alias Settings =
     { characterSettings: List CharacterSetting
     , footballGenerationTime: Float
     , username: String
+    , numberOfPlayers: Int
     }
 
 type Menu =

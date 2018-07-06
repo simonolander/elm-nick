@@ -36,6 +36,7 @@ init =
             { characterSettings = characterSettings
             , footballGenerationTime = 10.0
             , username = "Kattux"
+            , numberOfPlayers = 2
             }
         model =
             { windowSize = windowSize
