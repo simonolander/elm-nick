@@ -46,8 +46,16 @@ checkForGameOver game =
             |> Maybe.map (.current >> ((>=) 0))
             |> Maybe.withDefault False
 
+        lastManStanding =
+            game.gameMode == LastManStanding &&
+                ( game.characters
+                    |> List.filter isCharacterAlive
+                    |> List.length
+                    |> (==) 1
+                )
+
         gameState =
-            if outOfLives
+            if outOfLives || lastManStanding
             then
                 GameOver
             else
@@ -431,8 +439,17 @@ isFootballNickable dt football =
     football.vy < 0 && football.y >= characterHeight && football.y + football.vy * dt <= characterHeight
 
 
+isOutOfLives : Lives -> Bool
+isOutOfLives lives =
+    lives.current <= 0
+
+
 isCharacterDead : Character -> Bool
 isCharacterDead character =
     character.lives
-    |> Maybe.map (\ lives -> lives.current <= 0)
+    |> Maybe.map isOutOfLives
     |> Maybe.withDefault False
+
+
+isCharacterAlive : Character -> Bool
+isCharacterAlive = not << isCharacterDead
