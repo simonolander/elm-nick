@@ -63,8 +63,8 @@ renderMenu settings menu =
         SettingsMenu ->
             UI.menu
                 [ UI.menuTitle [] "Settings"
-                , UI.btn [ onClick MainMenuClicked] "Ok"
-                , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Ok"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
                 ]
         SinglePlayerMenu ->
             UI.menu
@@ -130,10 +130,10 @@ renderMenu settings menu =
                 , UI.btn [ onClick (InitializeGame SinglePlayerSurvival)] "Survival"
                 , UI.btn [ onClick (InitializeGame SinglePlayerFree)] "Free Mode"
                 , styled div [ height (px 20) ] [] []
-                , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
                 ]
 
-        MultiPlayerMenu ->
+        MultiplayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Multiplayer"
                 , styled div
@@ -251,16 +251,22 @@ renderMenu settings menu =
                 , UI.btn [ onClick (InitializeGame LastManStanding)] "Last Man Standing"
                 , UI.btn [ onClick (InitializeGame MultiplayerFree)] "Free Mode"
                 , styled div [ height (px 20) ] [] []
-                , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
                 ]
-
+        HighscoresMenu ->
+            UI.menu
+                [ UI.menuTitle [] "Settings"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Ok"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
+                ]
 
 renderMainMenu : Html Msg
 renderMainMenu =
     UI.menu
         [ UI.menuTitle [] "Main Menu"
-        , UI.btn [ onClick SinglePlayerMenuClicked] "Single Player"
-        , UI.btn [ onClick MultiplayerMenuClicked] "Multiplayer"
+        , UI.btn [ onClick (MenuNavigation SinglePlayerMenu)] "Single Player"
+        , UI.btn [ onClick (MenuNavigation MultiplayerMenu)] "Multiplayer"
         , styled div [ height (px 20) ] [] []
-        , UI.btn [ onClick SettingsClicked] "Settings"
+        , UI.btn [ onClick (MenuNavigation HighscoresMenu)] "Highscores"
+        , UI.btn [ onClick (MenuNavigation SettingsMenu)] "Settings"
         ]

@@ -72,7 +72,7 @@ renderGame windowSize settings game =
                         , UI.btn [ onClick ResumeClicked] "Resume"
                         , UI.btn [ onClick (InitializeGame game.gameMode)] "Restart"
                         , styled div [ height (px 20) ] [] []
-                        , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                        , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
                         ]
                 GameOver ->
                     UI.menu
@@ -133,7 +133,7 @@ renderGame windowSize settings game =
                                 UI.scoreboard game.scoreboard
                         , styled div [ height (px 20) ] [] []
                         , UI.btn [ onClick (InitializeGame game.gameMode)] "Replay"
-                        , UI.btn [ onClick MainMenuClicked] "Main Menu"
+                        , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
                         ]
                 Running ->
                     text ""

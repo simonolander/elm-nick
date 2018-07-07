@@ -66,10 +66,7 @@ type Msg =
     | FootballGenerated Football
     | VisibilityChanged PageVisibility.Visibility
     | ResumeClicked
-    | MainMenuClicked
-    | SettingsClicked
-    | SinglePlayerMenuClicked
-    | MultiplayerMenuClicked
+    | MenuNavigation Menu
     | InitializeGame GameMode
     | ReceiveScores (WebData (List Score))
     | UpdateUsername String
@@ -128,8 +125,9 @@ type alias Settings =
 type Menu =
     MainMenu
     | SettingsMenu
-    | MultiPlayerMenu
+    | MultiplayerMenu
     | SinglePlayerMenu
+    | HighscoresMenu
 
 
 -- REST --

@@ -37,17 +37,13 @@ update msg model =
         ResumeClicked ->
             updateOnResumeClicked model
 
-        MainMenuClicked ->
-            updateOnMainMenuClicked model
-
-        SettingsClicked ->
-            ( { model | menu = Just SettingsMenu }, Cmd.none)
-
-        SinglePlayerMenuClicked ->
-            ( { model | menu = Just SinglePlayerMenu }, Cmd.none)
-
-        MultiplayerMenuClicked ->
-            ( { model | menu = Just MultiPlayerMenu }, Cmd.none)
+        MenuNavigation menu ->
+            ( { model
+              | menu = Just menu
+              , game = Nothing
+              }
+            , Cmd.none
+            )
 
         InitializeGame gameMode ->
             initializeGame gameMode model
@@ -229,16 +225,6 @@ updateOnResumeClicked model =
           }
         , Cmd.none
         )
-
-
-updateOnMainMenuClicked : Model -> (Model, Cmd msg)
-updateOnMainMenuClicked model =
-    ( { model
-      | menu = Just MainMenu
-      , game = Nothing
-      }
-    , Cmd.none
-    )
 
 
 initializeGame : GameMode -> Model -> (Model, Cmd Msg)
