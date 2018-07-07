@@ -375,7 +375,11 @@ generateFootball pos game =
         (GameCoordinate x y) = pos
 
         boardIndex : Random.Generator Int
-        boardIndex = Random.int 0 (List.length game.characters - 1)
+        boardIndex =
+            game.characters
+            |> List.filter isCharacterAlive
+            |> List.map .boardIndex
+            |> randomSelection 0
 
         lane : Random.Generator Lane
         lane = Random.bool

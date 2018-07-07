@@ -4,6 +4,7 @@ import Array
 import Constants exposing (characterIdle)
 import Keyboard exposing (KeyCode)
 import Model exposing (..)
+import Random
 
 
 maybeCons : Maybe a -> List a -> List a
@@ -50,6 +51,16 @@ noCmd func (a, list) =
 batch : (a, List (List (Cmd b))) -> (a, Cmd b)
 batch (a, list) =
     (a, Cmd.batch (List.concat list))
+
+
+listGet : Int -> List a -> Maybe a
+listGet index list =
+    case list of
+        (h::t) ->
+            if index == 0 then Just h else listGet (index - 1) t
+
+        [] ->
+            Nothing
 
 
 keyCodeToString : KeyCode -> String
@@ -190,3 +201,16 @@ settingsToCharacters numberOfCharacters lives settings =
         settings
         |> List.take numberOfCharacters
         |> List.indexedMap characterSettingToCharacter
+
+
+randomSelection : a -> List a -> Random.Generator a
+randomSelection default list =
+    let
+        index =
+            Random.int 0 (List.length list)
+
+        get index =
+            listGet index list
+            |> Maybe.withDefault default
+    in
+        Random.map get index
