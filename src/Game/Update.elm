@@ -34,8 +34,30 @@ updateGameOnTick diff game =
         |> noCmd (updateSpriteAnimations diff)
         |> chain (updateFootballGenerationTimer diff)
         |> noCmd (updateGameTime diff)
+        |> noCmd setTimeOfDeath
         |> noCmd checkForGameOver
         |> batch
+
+
+setTimeOfDeath : Game -> Game
+setTimeOfDeath game =
+    let
+        setTimeOfDeathForCharacter character =
+            case character.timeOfDeath of
+                Just timeOfDeath ->
+                    character
+                Nothing ->
+                    if isCharacterDead character
+                    then
+                        { character
+                        | timeOfDeath = Just game.gameTime
+                        }
+                    else
+                        character
+    in
+        { game
+        | characters = List.map setTimeOfDeathForCharacter game.characters
+        }
 
 
 checkForGameOver : Game -> Game

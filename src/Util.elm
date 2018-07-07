@@ -196,6 +196,7 @@ settingsToCharacters numberOfCharacters lives settings =
             , spriteAnimation = characterIdle
             , boardIndex = index
             , lives = lives
+            , timeOfDeath = Nothing
             }
     in
         settings
