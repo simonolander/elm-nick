@@ -42,9 +42,9 @@ type alias Game =
     , footballs: List Football
     , characters: List Character
     , gameState: GameState
-    , gameTime: Float
-    , footballGenerationTime: Float
-    , remainingFootballGenerationTime: Float
+    , gameTime: Time
+    , footballGenerationTime: Time
+    , remainingFootballGenerationTime: Time
     , numberOfDroppedFootballs: Int
     , gameMode: GameMode
     , lives: Maybe Lives
@@ -81,8 +81,8 @@ type alias SpriteAnimation =
     , repeating: Bool
     , currentFrameIndex: Int
     , currentFrame: String
-    , frameTime: Float
-    , currentFrameTime: Float
+    , frameTime: Time
+    , currentFrameTime: Time
     }
 
 type alias Character =
@@ -92,6 +92,7 @@ type alias Character =
     , spriteAnimation: SpriteAnimation
     , boardIndex: Int
     , lives: Maybe MaxCurrent
+    , timeOfDeath: Maybe Time
     }
 
 type alias Football =
@@ -117,7 +118,7 @@ type alias CharacterSetting =
 
 type alias Settings =
     { characterSettings: Array CharacterSetting
-    , footballGenerationTime: Float
+    , footballGenerationTime: Time
     , username: String
     , numberOfPlayers: Int
     }
