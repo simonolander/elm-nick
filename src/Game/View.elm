@@ -77,7 +77,48 @@ renderGame windowSize settings game =
                 GameOver ->
                     UI.menu
                         [ UI.menuTitle [] ("Score " ++ (toString game.score))
-                        , if game.scoreboard == NotAsked
+                        , if game.gameMode == LastManStanding
+                          then
+                            styled div
+                                [ width (pct 100)
+                                , maxHeight (pct 50)
+                                , minHeight (px 55)
+                                , borderRadius (px 10)
+                                , padding (px 10)
+                                , boxSizing borderBox
+                                , backgroundColor (rgba 200 200 255 0.5)
+                                , border3 (px 1) solid (rgb 100 100 255)
+                                , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 100 100 255)
+                                , displayFlex
+                                , overflow auto
+                                , flexDirection column
+                                , justifyContent flexStart
+                                , fontSize xLarge
+                                , color (rgb 255 255 255)
+                                , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                                , fontWeight bold
+                                , fontFamily sansSerif
+                                ]
+                                []
+                                ( game.characters
+                                  |> List.sortWith sortTimeOfDeath
+                                  |> List.reverse
+                                  |> List.map
+                                      ( \character ->
+                                          styled div
+                                              [ displayFlex
+                                              , overflow auto
+                                              , justifyContent spaceBetween
+                                              , flexDirection row
+                                              , flexShrink (int 0)
+                                              ]
+                                              []
+                                              [ span [] [text ("Player " ++ toString (character.boardIndex + 1))]
+                                              ]
+                                      )
+                                )
+                          else
+                            if game.scoreboard == NotAsked
                             then
                                 styled form
                                     [ width (pct 100)
@@ -485,3 +526,12 @@ renderDivider g2w x =
             , Svg.Styled.Attributes.imageRendering "pixelated"
             , Svg.Styled.Attributes.preserveAspectRatio "none"
             ] []
+
+
+sortTimeOfDeath : Character -> Character -> Order
+sortTimeOfDeath c1 c2 =
+    case (c1.timeOfDeath, c2.timeOfDeath) of
+        (Just t1, Just t2) -> compare t1 t2
+        (Just _, Nothing) -> LT
+        (Nothing, Just _) -> GT
+        (Nothing, Nothing) -> EQ
