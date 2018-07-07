@@ -69,6 +69,64 @@ renderMenu settings menu =
         SinglePlayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Single Player"
+                , styled div
+                    [ displayFlex
+                    , flexDirection row
+                    , justifyContent spaceBetween
+                    , width (pct 100)
+                    ]
+                    []
+                    [ styled select
+                        [ fontSize (px 18)
+                        , color (rgb 51 51 51)
+                        , border3 (px 1) solid (rgb 191 191 191)
+                        , borderRadius (px 8)
+                        , padding2 (px 5) (px 10)
+                        , height (px 48)
+                        , backgroundColor (rgb 255 255 255)
+                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                        , flex (int 1)
+                        , marginRight (px 8)
+                        ]
+                        [ onInput (\ intString -> UpdatePlayerControl 0 Left (Result.withDefault 37 (String.toInt intString)))
+                        , title ("Left key for Player 1")
+                        ]
+                        ( goodKeys
+                            |> List.map
+                                (\(num, label) ->
+                                    option
+                                        [ value (toString num)
+                                        , selected (Array.get 0 settings.characterSettings |> Maybe.map (.leftKeyCode) |> Maybe.map ((==) num) |> Maybe.withDefault False)
+                                        ]
+                                        [ text label ]
+                                )
+                        )
+                    , styled select
+                        [ fontSize (px 18)
+                        , color (rgb 51 51 51)
+                        , border3 (px 1) solid (rgb 191 191 191)
+                        , borderRadius (px 8)
+                        , padding2 (px 5) (px 10)
+                        , height (px 48)
+                        , backgroundColor (rgb 255 255 255)
+                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                        , flex (int 1)
+                        ]
+                        [ onInput (\ intString -> UpdatePlayerControl 0 Right (Result.withDefault 39 (String.toInt intString)))
+                        , title ("Right key for Player 1")
+                        ]
+                        ( goodKeys
+                            |> List.map
+                                (\(num, label) ->
+                                    option
+                                        [ value (toString num)
+                                        , selected (Array.get 0 settings.characterSettings |> Maybe.map (.rightKeyCode) |> Maybe.map ((==) num) |> Maybe.withDefault False)
+                                        ]
+                                        [ text label ]
+                                )
+                        )
+                    ]
+                , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick (InitializeGame SinglePlayerSurvival)] "Survival"
                 , UI.btn [ onClick (InitializeGame SinglePlayerFree)] "Free Mode"
                 , styled div [ height (px 20) ] [] []
@@ -149,7 +207,7 @@ renderMenu settings menu =
                                     , marginRight (px 8)
                                     ]
                                     [ onInput (\ intString -> UpdatePlayerControl index Left (Result.withDefault 37 (String.toInt intString)))
-                                    , title ("Left key for player " ++ toString (index + 1))
+                                    , title ("Left key for Player " ++ toString (index + 1))
                                     ]
                                     ( goodKeys
                                         |> List.map
@@ -172,8 +230,8 @@ renderMenu settings menu =
                                     , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
                                     , flex (int 1)
                                     ]
-                                    [ onInput (\ intString -> UpdatePlayerControl index Right (Result.withDefault 37 (String.toInt intString)))
-                                    , title ("Right key for player " ++ toString (index + 1))
+                                    [ onInput (\ intString -> UpdatePlayerControl index Right (Result.withDefault 39 (String.toInt intString)))
+                                    , title ("Right key for Player " ++ toString (index + 1))
                                     ]
                                     ( goodKeys
                                         |> List.map
