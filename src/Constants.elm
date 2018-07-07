@@ -39,6 +39,20 @@ characterNick =
     }
 
 
+characterSitting : SpriteAnimation
+characterSitting =
+    { frames =
+        Array.fromList
+            [ "/assets/kattux-sitting/kattux-sitting_0.png"
+            ]
+    , repeating = True
+    , currentFrameIndex = 0
+    , currentFrame = "/assets/kattux-sitting/kattux-sitting_0.png"
+    , frameTime = 1 / 12
+    , currentFrameTime = 0
+    }
+
+
 gravity : Float
 gravity = -10.0
 

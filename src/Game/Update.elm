@@ -72,7 +72,8 @@ nickFootballs diff game =
                             x = getCharacterCenterX character
                             minX = x - characterHeight / 2
                             maxX = x + characterHeight / 2
-                            isNicked = football.x >= minX && football.x <= maxX
+                            characterIsAlive = (not << isCharacterDead) character
+                            isNicked = characterIsAlive && football.x >= minX && football.x <= maxX
                         in
                             if isNicked then
                                 ( True
@@ -169,15 +170,35 @@ updateCharacterOnDroppedFootball footballs character =
                     leftX - dx <= xWhenNickable && xWhenNickable <= leftX + dx
                 withinRight =
                     rightX - dx <= xWhenNickable && xWhenNickable <= rightX + dx
+                withinReach =
+                    withinLeft || withinRight
+                characterIsAlive =
+                    (not << isCharacterDead) character
             in
-                withinLeft || withinRight
+                withinReach && characterIsAlive
 
         update football character =
             if characterCouldHaveNickedFootball character football
             then
-                { character
-                | lives = Maybe.map (decreaseLives 1) character.lives
-                }
+                let
+                    removeLife character =
+                        { character
+                        | lives = Maybe.map (decreaseLives 1) character.lives
+                        }
+
+                    setAnimationIfDead character =
+                        { character
+                        | spriteAnimation =
+                            if isCharacterDead character
+                            then
+                                characterSitting
+                            else
+                                character.spriteAnimation
+                        }
+                in
+                    character
+                    |> removeLife
+                    |> setAnimationIfDead
             else
                 character
     in
@@ -291,12 +312,17 @@ updateGameOnKeyDown keyCode game =
 updateCharacterOnKeyDown : KeyCode -> Character -> Character
 updateCharacterOnKeyDown keyCode character =
     let
+        characterIsAlive =
+            (not << isCharacterDead) character
         lane =
-            if character.leftKeyCode == keyCode
-            then Left
-            else if character.rightKeyCode == keyCode
-            then Right
-            else character.lane
+            if characterIsAlive && character.leftKeyCode == keyCode
+            then
+                Left
+            else if characterIsAlive && character.rightKeyCode == keyCode
+            then
+                Right
+            else
+                character.lane
     in
         { character
         | lane = lane
@@ -389,6 +415,7 @@ decreaseLives numberOfLives lives =
     | current = max 0 (lives.current - numberOfLives)
     }
 
+
 moveFootball : Time -> Football -> Football
 moveFootball dt football =
     { football
@@ -398,6 +425,14 @@ moveFootball dt football =
     , r = football.r + football.vr * dt
     }
 
+
 isFootballNickable : Time -> Football -> Bool
 isFootballNickable dt football =
     football.vy < 0 && football.y >= characterHeight && football.y + football.vy * dt <= characterHeight
+
+
+isCharacterDead : Character -> Bool
+isCharacterDead character =
+    character.lives
+    |> Maybe.map (\ lives -> lives.current <= 0)
+    |> Maybe.withDefault False

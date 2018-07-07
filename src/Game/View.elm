@@ -418,8 +418,47 @@ renderCharacter g2w character =
                 , Svg.Styled.Attributes.imageRendering "pixelated"
                 , Svg.Styled.Attributes.preserveAspectRatio "none"
                 ] []
+
+        renderHearts lives =
+            let
+                h =
+                    characterHeight / toFloat lives.max * 0.95
+                y index =
+                    wbry - h - toFloat index * (h + characterHeight / toFloat lives.max * 0.05)
+                image index =
+                    if index < lives.current then
+                        "/assets/red-heart.png"
+                    else
+                        "/assets/grey-heart.png"
+                x =
+                    wbrx + width * 0.01
+            in
+                Svg.Styled.g
+                    []
+                    (
+                    List.range 0 (lives.max - 1)
+                    |> List.map
+                        (\index ->
+                            Svg.Styled.image
+                                [ Svg.Styled.Attributes.x (toString x)
+                                , Svg.Styled.Attributes.y (toString (y index))
+                                , Svg.Styled.Attributes.width (toString h)
+                                , Svg.Styled.Attributes.height (toString h)
+                                , Svg.Styled.Attributes.xlinkHref (image index)
+                                , Svg.Styled.Attributes.preserveAspectRatio "none"]
+                                []
+                        )
+                    )
     in
-        characterSprite
+        case character.lives of
+            Just lives ->
+                Svg.Styled.g
+                    []
+                    [ characterSprite
+                    , renderHearts lives
+                    ]
+            Nothing ->
+                characterSprite
 
 
 renderDivider : (GameCoordinate -> WindowCoordinate) -> Float ->  Svg.Styled.Svg msg
