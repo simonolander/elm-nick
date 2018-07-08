@@ -42,8 +42,8 @@ view model =
             |> Maybe.withDefault (div [] [])
     in
         styled div
-            [ width (pct 100)
-            , height (pct 100)
+            [ width (px model.windowSize.width)
+            , height (px model.windowSize.height)
             , overflow hidden
             , backgroundImage (url "/assets/field.png")
             , backgroundRepeat noRepeat
@@ -52,7 +52,7 @@ view model =
             []
             [ gameDiv
             , menuDiv
-            , frameRateDiv
+--            , frameRateDiv
             ]
 
 
