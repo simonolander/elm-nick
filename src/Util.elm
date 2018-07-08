@@ -197,6 +197,7 @@ settingsToCharacters numberOfCharacters lives settings =
             , boardIndex = index
             , lives = lives
             , timeOfDeath = Nothing
+            , numberOfNickedFootballs = 0
             }
     in
         settings

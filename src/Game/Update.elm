@@ -102,13 +102,14 @@ nickFootballs diff game =
                             x = getCharacterCenterX character
                             minX = x - characterHeight / 2
                             maxX = x + characterHeight / 2
-                            characterIsAlive = (not << isCharacterDead) character
+                            characterIsAlive = isCharacterAlive character
                             isNicked = characterIsAlive && football.x >= minX && football.x <= maxX
                         in
                             if isNicked then
                                 ( True
                                 , { character
                                   | spriteAnimation = characterNick
+                                  , numberOfNickedFootballs = character.numberOfNickedFootballs + 1
                                   } :: tail
                                 )
                             else
@@ -203,7 +204,7 @@ updateCharacterOnDroppedFootball footballs character =
                 withinReach =
                     withinLeft || withinRight
                 characterIsAlive =
-                    (not << isCharacterDead) character
+                    isCharacterAlive character
             in
                 withinReach && characterIsAlive
 
@@ -343,7 +344,7 @@ updateCharacterOnKeyDown : KeyCode -> Character -> Character
 updateCharacterOnKeyDown keyCode character =
     let
         characterIsAlive =
-            (not << isCharacterDead) character
+            isCharacterAlive character
         lane =
             if characterIsAlive && character.leftKeyCode == keyCode
             then

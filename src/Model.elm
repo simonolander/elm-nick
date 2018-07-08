@@ -93,6 +93,7 @@ type alias Character =
     , boardIndex: Int
     , lives: Maybe MaxCurrent
     , timeOfDeath: Maybe Time
+    , numberOfNickedFootballs: Int
     }
 
 type alias Football =
