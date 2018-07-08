@@ -8,8 +8,6 @@ import Model exposing (..)
 import Task exposing (perform)
 import Window exposing (Size, resizes)
 import AnimationFrame
-import Constants exposing (..)
-import Game exposing (..)
 import Update
 import View
 import PageVisibility

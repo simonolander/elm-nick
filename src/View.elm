@@ -2,19 +2,14 @@ module View exposing (..)
 
 import Array
 import Css exposing (..)
-import Game exposing (getGameCharacterTop, getGameSize)
 import Game.View exposing (renderGame)
 import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (type_, value, selected, title)
 import Html.Styled.Events exposing (onClick, onInput)
 import Model exposing (..)
 import RemoteData exposing (..)
-import Svg.Styled exposing (Svg)
-import Svg.Styled.Attributes
-import Constants exposing (..)
 import UI
 import Util exposing (filterMaybe, gameModeToString, goodKeys)
-import Window exposing (Size)
 
 view : Model -> Html Msg
 view model =
@@ -42,8 +37,8 @@ view model =
             |> Maybe.withDefault (div [] [])
     in
         styled div
-            [ width (px model.windowSize.width)
-            , height (px model.windowSize.height)
+            [ (width << px << toFloat) model.windowSize.width
+            , (height << px << toFloat) model.windowSize.height
             , overflow hidden
             , backgroundImage (url "/assets/field.png")
             , backgroundRepeat noRepeat
