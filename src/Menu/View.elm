@@ -222,6 +222,7 @@ renderMenu settings menu =
         HighscoreMenu gameMode webData ->
             renderHighscoresMenu gameMode webData
 
+
 renderHighscoresMenu : GameMode -> WebData (List Score) -> Html Msg
 renderHighscoresMenu gameMode webData =
     UI.menu
@@ -230,6 +231,7 @@ renderHighscoresMenu gameMode webData =
         , styled div [ height (px 20) ] [] []
         , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Back to Highscores"
         ]
+
 
 renderMainMenu : Html Msg
 renderMainMenu =
