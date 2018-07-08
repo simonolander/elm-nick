@@ -103,47 +103,74 @@ scoreboard webData =
         , borderRadius (px 10)
         , padding (px 10)
         , boxSizing borderBox
-        , backgroundColor (rgba 200 200 255 0.5)
-        , border3 (px 1) solid (rgb 100 100 255)
-        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 100 100 255)
-        , displayFlex
+        , backgroundColor (rgba 255 255 255 1.0)
+        , border3 (px 1) solid (rgb 191 191 191)
+        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
         , overflow auto
-        , flexDirection column
-        , justifyContent flexStart
         , fontSize xLarge
-        , color (rgb 255 255 255)
-        , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+        , color (rgb 80 80 80)
         , fontWeight bold
         , fontFamily sansSerif
         ]
         []
         ( case webData of
             NotAsked ->
-                [ styled span
-                    [textAlign center]
+                [ styled div
+                    [ textAlign center
+                    , width (pct 100)
+                    ]
                     []
                     [text "Not even asked"]
                 ]
             Loading ->
-                [ styled span
-                    [textAlign center]
+                [ styled div
+                    [ textAlign center
+                    , width (pct 100)
+                    ]
                     []
                     [text "Loading scores..."]
                 ]
             Success scores ->
                 scores
-                |> List.map
-                    ( \score ->
+                |> List.indexedMap
+                    ( \index score ->
                         styled div
-                            [ displayFlex
-                            , overflow auto
-                            , justifyContent spaceBetween
-                            , flexDirection row
-                            , flexShrink (int 0)
+                            [ minWidth (pct 100)
+                            , display Css.table
+                            , tableLayout fixed
+                            , borderBottom3 (px 1) solid (rgb 200 200 200)
+                            , paddingBottom (px 8)
+                            , paddingTop (px 8)
+                            , lastChild
+                                [ borderBottom (px 0)
+                                ]
+                            , hover
+                                [ backgroundColor (rgb 235 235 235)
+                                ]
                             ]
                             []
-                            [ span [] [text score.username]
-                            , span [] [text (toString score.score)]
+                            [ styled div
+                                [ display tableCell
+                                , verticalAlign middle
+                                , width (pct 15)
+                                ]
+                                []
+                                [text (toString (index + 1) ++ ".")]
+                            , styled div
+                                [ display tableCell
+                                , verticalAlign middle
+                                , width (pct 60)
+                                ]
+                                []
+                                [text score.username]
+                            , styled div
+                                [ display tableCell
+                                , verticalAlign middle
+                                , width (pct 25)
+                                , textAlign right
+                                ]
+                                []
+                                [text (toString score.score)]
                             ]
                     )
             Failure error ->

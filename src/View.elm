@@ -272,7 +272,8 @@ renderHighscoresMenu gameMode webData =
     UI.menu
         [ UI.menuTitle [] (gameModeToString gameMode)
         , UI.scoreboard webData
-        , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Highscores"
+        , styled div [ height (px 20) ] [] []
+        , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Back to Highscores"
         ]
 
 renderMainMenu : Html Msg
