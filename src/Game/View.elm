@@ -144,12 +144,12 @@ renderGame windowSize settings game =
                           else
                             if game.scoreboard == NotAsked
                             then
-                                styled form
+                                styled div
                                     [ width (pct 100)
                                     , displayFlex
                                     , justifyContent spaceBetween
                                     ]
-                                    [ action "#"]
+                                    []
                                     [ styled input
                                         [ fontSize (px 18)
                                         , color (rgb 51 51 51)
@@ -166,7 +166,7 @@ renderGame windowSize settings game =
                                         , onInput UpdateUsername
                                         ]
                                         []
-                                    , styled input
+                                    , styled button
                                         [ hover
                                             [ backgroundColor UI.secondaryTheme
                                             ]
@@ -188,11 +188,9 @@ renderGame windowSize settings game =
                                         , backgroundImage none
                                         , textShadow none
                                         ]
-                                        [ type_ "submit"
-                                        , onClick (PostScore game.gameMode { score = game.score, username = settings.username })
-                                        , value "Send"
+                                        [ onClick (PostScore game.gameMode { score = game.score, username = settings.username })
                                         ]
-                                        []
+                                        [ text "Send" ]
                                     ]
                             else
                                 UI.scoreboard game.scoreboard
