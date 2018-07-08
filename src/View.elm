@@ -279,5 +279,23 @@ renderMainMenu =
         , UI.btn [ onClick (MenuNavigation MultiplayerMenu)] "Multiplayer"
         , styled div [ height (px 20) ] [] []
         , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Highscores"
-        , UI.btn [ onClick (MenuNavigation SettingsMenu)] "Settings"
+        , styled div [ height (px 20) ] [] []
+        , styled div
+            [ width (pct 100)
+            , textAlign right
+            , fontFamily monospace
+            , color (rgb 220 220 220)
+            ]
+            []
+            [ span
+                []
+                [ text "@ Simon Olander Sahlén" ]
+            , br [] []
+            , a
+                [ Html.Styled.Attributes.href "https://github.com/simonolander/elm-nick"
+                , Html.Styled.Attributes.target "_blank"
+                ]
+                [ text "Source code" ]
+            ]
+--        , UI.btn [ onClick (MenuNavigation SettingsMenu)] "Settings"
         ]
