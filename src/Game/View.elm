@@ -86,16 +86,12 @@ renderGame windowSize settings game =
                                 , borderRadius (px 10)
                                 , padding (px 10)
                                 , boxSizing borderBox
-                                , backgroundColor (rgba 200 200 255 0.5)
-                                , border3 (px 1) solid (rgb 100 100 255)
-                                , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 100 100 255)
-                                , displayFlex
+                                , backgroundColor (rgba 255 255 255 1.0)
+                                , border3 (px 1) solid (rgb 191 191 191)
+                                , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
                                 , overflow auto
-                                , flexDirection column
-                                , justifyContent flexStart
                                 , fontSize xLarge
-                                , color (rgb 255 255 255)
-                                , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                                , color (rgb 80 80 80)
                                 , fontWeight bold
                                 , fontFamily sansSerif
                                 ]
@@ -103,19 +99,47 @@ renderGame windowSize settings game =
                                 ( game.characters
                                   |> List.sortWith sortTimeOfDeath
                                   |> List.reverse
-                                  |> List.map
-                                      ( \character ->
-                                          styled div
-                                              [ displayFlex
-                                              , overflow auto
-                                              , justifyContent spaceBetween
-                                              , flexDirection row
-                                              , flexShrink (int 0)
-                                              ]
-                                              []
-                                              [ span [] [text ("Player " ++ toString (character.boardIndex + 1))]
-                                              ]
-                                      )
+                                  |> List.indexedMap
+                                      ( \index character ->
+                                        styled div
+                                            [ minWidth (pct 100)
+                                            , display Css.table
+                                            , tableLayout fixed
+                                            , borderBottom3 (px 1) solid (rgb 200 200 200)
+                                            , paddingBottom (px 8)
+                                            , paddingTop (px 8)
+                                            , lastChild
+                                                [ borderBottom (px 0)
+                                                ]
+                                            , hover
+                                                [ backgroundColor (rgb 235 235 235)
+                                                ]
+                                            ]
+                                            []
+                                            [ styled div
+                                                [ display tableCell
+                                                , verticalAlign middle
+                                                , width (pct 15)
+                                                ]
+                                                []
+                                                [text (toString (index + 1) ++ ".")]
+                                            , styled div
+                                                [ display tableCell
+                                                , verticalAlign middle
+                                                , width (pct 60)
+                                                ]
+                                                []
+                                                [text ("Player " ++ toString (character.boardIndex + 1))]
+                                            , styled div
+                                                [ display tableCell
+                                                , verticalAlign middle
+                                                , width (pct 25)
+                                                , textAlign right
+                                                ]
+                                                []
+                                                [text (toString character.numberOfNickedFootballs)]
+                                            ]
+                                    )
                                 )
                           else
                             if game.scoreboard == NotAsked
