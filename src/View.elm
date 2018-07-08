@@ -13,7 +13,7 @@ import Svg.Styled exposing (Svg)
 import Svg.Styled.Attributes
 import Constants exposing (..)
 import UI
-import Util exposing (filterMaybe, goodKeys)
+import Util exposing (filterMaybe, gameModeToString, goodKeys)
 import Window exposing (Size)
 
 view : Model -> Html Msg
@@ -270,7 +270,7 @@ renderMenu settings menu =
 renderHighscoresMenu : GameMode -> WebData (List Score) -> Html Msg
 renderHighscoresMenu gameMode webData =
     UI.menu
-        [ UI.menuTitle [] (toString gameMode)
+        [ UI.menuTitle [] (gameModeToString gameMode)
         , UI.scoreboard webData
         , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Highscores"
         ]

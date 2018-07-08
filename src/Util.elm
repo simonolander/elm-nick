@@ -215,3 +215,12 @@ randomSelection default list =
             |> Maybe.withDefault default
     in
         Random.map get index
+
+gameModeToString : GameMode -> String
+gameModeToString gameMode =
+    case gameMode of
+        SinglePlayerSurvival -> "Single Player Survival"
+        MultiplayerCooperation -> "Multiplayer Cooperation"
+        MultiplayerFree -> "Multiplayer Free"
+        LastManStanding -> "Last Man Standing"
+        SinglePlayerFree -> "Single Player Free"
