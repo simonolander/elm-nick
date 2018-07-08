@@ -70,10 +70,20 @@ def lambda_handler(event, context):
         logger.info(event)
         raise Exception("Bad Request: event['params']['querystring']['game'] is not a string")
 
+    if "limit" in querystring:
+        try:
+            limit = int(querystring["limit"])
+            if limit < 0:
+                raise Exception("Bad Request: event['params']['querystring']['limit'] '" + querystring["limit"] + "' can't be < 0")
+        except ValueError:
+            raise Exception("Bad Request: event['params']['querystring']['limit'] '" + querystring["limit"] + "' is not an int")
+    else:
+        limit = 100
+
     scores = []
     with conn.cursor() as cur:
-        sql = "SELECT score, username, created_time, misc FROM scores WHERE game=%s ORDER BY score DESC"
-        cur.execute(sql, (game,))
+        sql = "SELECT score, username, created_time, misc FROM scores WHERE game=%s ORDER BY score DESC LIMIT %s"
+        cur.execute(sql, (game, limit))
         for row in cur:
             scores.append({
                 "score": row[0],
