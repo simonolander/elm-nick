@@ -8,6 +8,7 @@ import Html.Styled exposing (..)
 import Html.Styled.Attributes exposing (type_, value, selected, title)
 import Html.Styled.Events exposing (onClick, onInput)
 import Model exposing (..)
+import RemoteData exposing (..)
 import Svg.Styled exposing (Svg)
 import Svg.Styled.Attributes
 import Constants exposing (..)
@@ -253,12 +254,26 @@ renderMenu settings menu =
                 , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
                 ]
-        HighscoresMenu ->
+
+        SelectHighscoreMenu ->
             UI.menu
-                [ UI.menuTitle [] "Settings"
-                , UI.btn [ onClick (MenuNavigation MainMenu)] "Ok"
+                [ UI.menuTitle [] "Highscores"
+                , UI.btn [ onClick (MenuNavigation (HighscoreMenu SinglePlayerSurvival NotAsked)) ] "Single Player Survival"
+                , UI.btn [ onClick (MenuNavigation (HighscoreMenu MultiplayerCooperation NotAsked)) ] "Multiplayer Cooperation"
+                , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
                 ]
+
+        HighscoreMenu gameMode webData ->
+            renderHighscoresMenu gameMode webData
+
+renderHighscoresMenu : GameMode -> WebData (List Score) -> Html Msg
+renderHighscoresMenu gameMode webData =
+    UI.menu
+        [ UI.menuTitle [] (toString gameMode)
+        , UI.scoreboard webData
+        , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Highscores"
+        ]
 
 renderMainMenu : Html Msg
 renderMainMenu =
@@ -267,6 +282,6 @@ renderMainMenu =
         , UI.btn [ onClick (MenuNavigation SinglePlayerMenu)] "Single Player"
         , UI.btn [ onClick (MenuNavigation MultiplayerMenu)] "Multiplayer"
         , styled div [ height (px 20) ] [] []
-        , UI.btn [ onClick (MenuNavigation HighscoresMenu)] "Highscores"
+        , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Highscores"
         , UI.btn [ onClick (MenuNavigation SettingsMenu)] "Settings"
         ]

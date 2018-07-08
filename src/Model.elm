@@ -128,7 +128,8 @@ type Menu =
     | SettingsMenu
     | MultiplayerMenu
     | SinglePlayerMenu
-    | HighscoresMenu
+    | SelectHighscoreMenu
+    | HighscoreMenu GameMode (WebData (List Score))
 
 
 -- REST --

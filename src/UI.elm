@@ -119,17 +119,10 @@ scoreboard webData =
         []
         ( case webData of
             NotAsked ->
-                [ styled div
-                    [ displayFlex
-                    , overflow auto
-                    , justifyContent spaceBetween
-                    , flexDirection row
-                    , flexShrink (int 0)
-                    ]
+                [ styled span
+                    [textAlign center]
                     []
-                    [ input [ onInput UpdateUsername ] []
-                    , btn [] "Send"
-                    ]
+                    [text "Not even asked"]
                 ]
             Loading ->
                 [ styled span

@@ -36,7 +36,7 @@ postScore : GameMode -> Score -> Cmd Msg
 postScore gameMode { score, username } =
     let
         game =
-            "elm-nick " ++ (toString gameMode)
+            gameModeToGameString gameMode
 
         object =
             Json.Encode.object
@@ -58,8 +58,17 @@ postScore gameMode { score, username } =
 {-| Gets the scores from the server and decodes them into a List Score
     packed into a ReceiveScores message.
 -}
-getScores : Cmd Msg
-getScores =
-    Http.get (baseUrl ++ "?game=elm-nick") (Json.Decode.list scoreDecoder)
-        |> RemoteData.sendRequest
-        |> Cmd.map ReceiveScores
+getScores : GameMode -> Cmd Msg
+getScores gameMode =
+    let
+        url =
+            baseUrl ++ "?game=" ++ gameModeToGameString gameMode
+    in
+        Http.get url (Json.Decode.list scoreDecoder)
+            |> RemoteData.sendRequest
+            |> Cmd.map ReceiveScores
+
+
+gameModeToGameString : GameMode -> String
+gameModeToGameString =
+    ((++) "elm-nick ") << toString

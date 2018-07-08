@@ -10,7 +10,7 @@ import Game exposing (..)
 import Game.Update exposing (..)
 import Random
 import RemoteData exposing (RemoteData(Loading, NotAsked))
-import Rest exposing (postScore)
+import Rest exposing (getScores, postScore)
 import Util exposing (settingsToCharacters)
 
 
@@ -38,25 +38,43 @@ update msg model =
             updateOnResumeClicked model
 
         MenuNavigation menu ->
-            ( { model
-              | menu = Just menu
-              , game = Nothing
-              }
-            , Cmd.none
-            )
+            let
+                (newMenu, cmd) =
+                    case menu of
+                        HighscoreMenu gameMode _ ->
+                            (HighscoreMenu gameMode Loading, getScores gameMode)
+
+                        _ ->
+                            (menu, Cmd.none)
+            in
+                ( { model
+                  | menu = Just newMenu
+                  , game = Nothing
+                  }
+                , cmd
+                )
 
         InitializeGame gameMode ->
             initializeGame gameMode model
 
         ReceiveScores webData ->
             let
-                setScores webData game =
+                setScoresGame webData game =
                     { game
                     | scoreboard = webData
                     }
+
+                setScoresMenu webData menu =
+                    case menu of
+                        HighscoreMenu gameMode _ ->
+                            HighscoreMenu gameMode webData
+
+                        default ->
+                            default
             in
                 ( { model
-                  | game = Maybe.map (setScores webData) model.game
+                  | game = Maybe.map (setScoresGame webData) model.game
+                  , menu = Maybe.map (setScoresMenu webData) model.menu
                   }
                 , Cmd.none
                 )
