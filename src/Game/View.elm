@@ -190,7 +190,7 @@ renderGame windowSize settings game =
                                         ]
                                         [ onClick (PostScore game.gameMode { score = game.score, username = settings.username })
                                         ]
-                                        [ text "Send" ]
+                                        [ text "Submit" ]
                                     ]
                             else
                                 UI.scoreboard game.scoreboard
