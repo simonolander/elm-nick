@@ -77,6 +77,21 @@ renderGame windowSize settings game =
                 GameOver ->
                     UI.menu
                         [ UI.menuTitle [] ("Score " ++ (toString game.score))
+                        , styled div
+                            [ width (pct 100)
+                            , color (rgb 255 255 255)
+                            , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                            , fontWeight bold
+                            , fontFamily sansSerif
+                            ]
+                            []
+                            [ text
+                                ( if game.gameMode == LastManStanding then
+                                      "Winner"
+                                  else
+                                      "Highscores"
+                                )
+                            ]
                         , if game.gameMode == LastManStanding
                           then
                             styled div
