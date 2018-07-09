@@ -26,6 +26,15 @@ renderMenu settings menu =
             UI.menu
                 [ UI.menuTitle [] "Single Player"
                 , styled div
+                    [ width (pct 100)
+                    , color (rgb 255 255 255)
+                    , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                    , fontWeight bold
+                    , fontFamily sansSerif
+                    ]
+                    []
+                    [ text "Left and right controls" ]
+                , styled div
                     [ displayFlex
                     , flexDirection row
                     , justifyContent spaceBetween
@@ -93,6 +102,15 @@ renderMenu settings menu =
             UI.menu
                 [ UI.menuTitle [] "Multiplayer"
                 , styled div
+                    [ width (pct 100)
+                    , color (rgb 255 255 255)
+                    , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                    , fontWeight bold
+                    , fontFamily sansSerif
+                    ]
+                    []
+                    [ text "Number of players" ]
+                , styled div
                     [ displayFlex
                     , flexDirection row
                     , justifyContent spaceBetween
@@ -131,6 +149,16 @@ renderMenu settings menu =
 
                         )
                     ]
+                , styled div
+                    [ width (pct 100)
+                    , color (rgb 255 255 255)
+                    , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+                    , fontWeight bold
+                    , fontFamily sansSerif
+                    , marginTop (px 8)
+                    ]
+                    []
+                    [ text "Left and right controls" ]
                 , styled div
                     [ displayFlex
                     , flexDirection column
@@ -207,7 +235,7 @@ renderMenu settings menu =
                 , UI.btn [ onClick (InitializeGame LastManStanding)] "Last Man Standing"
                 , UI.btn [ onClick (InitializeGame MultiplayerFree)] "Free Mode"
                 , styled div [ height (px 20) ] [] []
-                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
 
         SelectHighscoreMenu ->
