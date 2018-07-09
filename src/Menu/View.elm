@@ -264,7 +264,13 @@ renderHighscoresMenu gameMode webData =
 renderMainMenu : Html Msg
 renderMainMenu =
     UI.menu
-        [ UI.menuTitle [] "Main Menu"
+        [ styled img
+            [ width (pct 100)
+            , height auto
+            , property "image-rendering" "pixelated"
+            ]
+            [ Html.Styled.Attributes.src "/assets/title.png" ]
+            []
         , UI.btn [ onClick (MenuNavigation SinglePlayerMenu)] "Single Player"
         , UI.btn [ onClick (MenuNavigation MultiplayerMenu)] "Multiplayer"
         , styled div [ height (px 20) ] [] []
