@@ -1,4 +1,0 @@
-module Menu exposing (..)
-
-renderMainMenu =
-    ()
