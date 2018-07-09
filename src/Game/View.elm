@@ -108,6 +108,7 @@ renderGame windowSize settings game =
                                 , fontSize xLarge
                                 , color (rgb 80 80 80)
                                 , fontWeight bold
+                                , flexShrink (int 0)
                                 , fontFamily sansSerif
                                 ]
                                 []

@@ -30,6 +30,7 @@ renderMenu settings menu =
                     , color (rgb 255 255 255)
                     , textShadow3 (px 1) (px 2) (rgb 0 0 0)
                     , fontWeight bold
+                    , flexShrink (int 0)
                     , fontFamily sansSerif
                     ]
                     []
@@ -38,6 +39,7 @@ renderMenu settings menu =
                     [ displayFlex
                     , flexDirection row
                     , justifyContent spaceBetween
+                    , flexShrink (int 0)
                     , width (pct 100)
                     ]
                     []
@@ -106,6 +108,7 @@ renderMenu settings menu =
                     , color (rgb 255 255 255)
                     , textShadow3 (px 1) (px 2) (rgb 0 0 0)
                     , fontWeight bold
+                    , flexShrink (int 0)
                     , fontFamily sansSerif
                     ]
                     []
@@ -114,6 +117,7 @@ renderMenu settings menu =
                     [ displayFlex
                     , flexDirection row
                     , justifyContent spaceBetween
+                    , flexShrink (int 0)
                     , width (pct 100)
                     ]
                     []
@@ -162,6 +166,7 @@ renderMenu settings menu =
                 , styled div
                     [ displayFlex
                     , flexDirection column
+                    , flexShrink (int 0)
                     , width (pct 100)
                     ]
                     []
