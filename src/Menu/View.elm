@@ -20,7 +20,7 @@ renderMenu settings menu =
             UI.menu
                 [ UI.menuTitle [] "Settings"
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Ok"
-                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
         SinglePlayerMenu ->
             UI.menu
@@ -95,7 +95,7 @@ renderMenu settings menu =
                 , UI.btn [ onClick (InitializeGame SinglePlayerSurvival)] "Survival"
                 , UI.btn [ onClick (InitializeGame SinglePlayerFree)] "Free Mode"
                 , styled div [ height (px 20) ] [] []
-                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
 
         MultiplayerMenu ->
@@ -244,7 +244,7 @@ renderMenu settings menu =
                 , UI.btn [ onClick (MenuNavigation (HighscoreMenu SinglePlayerSurvival NotAsked)) ] "Single Player Survival"
                 , UI.btn [ onClick (MenuNavigation (HighscoreMenu MultiplayerCooperation NotAsked)) ] "Multiplayer Cooperation"
                 , styled div [ height (px 20) ] [] []
-                , UI.btn [ onClick (MenuNavigation MainMenu)] "Main Menu"
+                , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
 
         HighscoreMenu gameMode webData ->
