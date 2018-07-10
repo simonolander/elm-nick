@@ -415,11 +415,11 @@ renderHUD game =
 
 
 renderFootball : (GameCoordinate -> ViewBoxCoordinate) -> Football -> Svg.Styled.Svg msg
-renderFootball g2w football =
+renderFootball gameToViewBoxCoordinate football =
     let
-        (ViewBoxCoordinate wcx wcy) = g2w (GameCoordinate football.x football.y)
-        (ViewBoxCoordinate wtlx wtly) = g2w (GameCoordinate (football.x - footballRadius) (football.y + footballRadius))
-        (ViewBoxCoordinate wbrx wbry) = g2w (GameCoordinate (football.x + footballRadius) (football.y - footballRadius))
+        (ViewBoxCoordinate wcx wcy) = gameToViewBoxCoordinate (GameCoordinate football.x football.y)
+        (ViewBoxCoordinate wtlx wtly) = gameToViewBoxCoordinate (GameCoordinate (football.x - footballRadius) (football.y + footballRadius))
+        (ViewBoxCoordinate wbrx wbry) = gameToViewBoxCoordinate (GameCoordinate (football.x + footballRadius) (football.y - footballRadius))
         width = wbrx - wtlx
         height = wbry - wtly
         angle = football.r
@@ -477,11 +477,11 @@ renderFootball g2w football =
 
 
 renderCharacter : (GameCoordinate -> ViewBoxCoordinate) -> Character -> Svg.Styled.Svg msg
-renderCharacter g2w character =
+renderCharacter gameToViewBoxCoordinate character =
     let
         (GameCoordinate gcx gty) = getGameCharacterTop character.boardIndex character.lane
-        (ViewBoxCoordinate wtlx wtly) = g2w (GameCoordinate (gcx - characterHeight / 2) (gty))
-        (ViewBoxCoordinate wbrx wbry) = g2w (GameCoordinate (gcx + characterHeight / 2) (gty - characterHeight))
+        (ViewBoxCoordinate wtlx wtly) = gameToViewBoxCoordinate (GameCoordinate (gcx - characterHeight / 2) (gty))
+        (ViewBoxCoordinate wbrx wbry) = gameToViewBoxCoordinate (GameCoordinate (gcx + characterHeight / 2) (gty - characterHeight))
         width = wbrx - wtlx
         height = wbry - wtly
         currentFrame = character.spriteAnimation.currentFrame
@@ -537,13 +537,13 @@ renderCharacter g2w character =
 
 
 renderDivider : (GameCoordinate -> ViewBoxCoordinate) -> Float ->  Svg.Styled.Svg msg
-renderDivider g2w x =
+renderDivider gameToViewBoxCoordinate x =
     let
         (ViewBoxCoordinate wtlx wtly) =
-            g2w (GameCoordinate (x - characterHeight / 2) characterHeight)
+            gameToViewBoxCoordinate (GameCoordinate (x - characterHeight / 2) characterHeight)
 
         (ViewBoxCoordinate wbrx wbry) =
-            g2w (GameCoordinate (x + characterHeight / 2) 0)
+            gameToViewBoxCoordinate (GameCoordinate (x + characterHeight / 2) 0)
 
         width =
             wbrx - wtlx
