@@ -120,14 +120,11 @@ updateOnTick diff model =
 
 updateOnKeyDown : KeyCode -> Model -> (Model, Cmd Msg)
 updateOnKeyDown keyCode model =
-    let
-        newModel =
-            { model
-            | game = Maybe.map (updateGameOnKeyDown keyCode) model.game
-            }
-        cmd = Cmd.none
-    in
-        (newModel, cmd)
+    ( { model
+      | game = Maybe.map (updateGameOnKeyDown keyCode) model.game
+      }
+    , Cmd.none
+    )
 
 
 updateOnFootballGenerated : Football -> Model -> (Model, Cmd Msg)
@@ -141,90 +138,17 @@ updateOnFootballGenerated football model =
 
 updateOnVisibilityChanged : Visibility -> Model -> (Model, Cmd Msg)
 updateOnVisibilityChanged visibility model =
-    let
-        game =
-            Maybe.map (updateGameOnVisibilityChanged visibility) model.game
-    in
-        ( { model
-          | game = game
-          }
-        , Cmd.none
-        )
+    ( { model
+      | game = Maybe.map (updateGameOnVisibilityChanged visibility) model.game
+      }
+    , Cmd.none
+    )
 
 
 updateOnResumeClicked : Model -> (Model, Cmd msg)
 updateOnResumeClicked model =
-    let
-        game =
-            Maybe.map updateGameOnResumeClicked model.game
-    in
-        ( { model
-          | game = game
-          }
-        , Cmd.none
-        )
-
-
-initializeGame : GameMode -> Model -> (Model, Cmd Msg)
-initializeGame gameMode model =
-    let
-        settings = model.settings
-        footballs =
-            []
-        defaultLives =
-            { max = 3
-            , current = 3
-            }
-        lives =
-            case gameMode of
-                SinglePlayerFree ->
-                    Nothing
-                SinglePlayerSurvival ->
-                    Just defaultLives
-                MultiplayerCooperation ->
-                    Just defaultLives
-                MultiplayerFree ->
-                    Nothing
-                LastManStanding ->
-                    Nothing
-
-        firstCharacterSetting =
-            Array.get 0 model.settings.characterSettings
-            |> Maybe.withDefault
-                { leftKeyCode = 37
-                , rightKeyCode = 39
-                }
-
-        characters =
-            case gameMode of
-                SinglePlayerFree ->
-                    settingsToCharacters 2 Nothing [firstCharacterSetting, firstCharacterSetting]
-                SinglePlayerSurvival ->
-                    settingsToCharacters 2 Nothing [firstCharacterSetting, firstCharacterSetting]
-                MultiplayerCooperation ->
-                    settingsToCharacters model.settings.numberOfPlayers Nothing (Array.toList model.settings.characterSettings)
-                MultiplayerFree ->
-                    settingsToCharacters model.settings.numberOfPlayers Nothing (Array.toList model.settings.characterSettings)
-                LastManStanding ->
-                    settingsToCharacters model.settings.numberOfPlayers (Just defaultLives) (Array.toList model.settings.characterSettings)
-
-        game =
-            { score = 0
-            , footballs = footballs
-            , characters = characters
-            , gameState = Running
-            , gameTime = 0
-            , footballGenerationTime = settings.footballGenerationTime
-            , remainingFootballGenerationTime = 3
-            , numberOfDroppedFootballs = 0
-            , gameMode = gameMode
-            , lives = lives
-            , scoreboard = NotAsked
-            }
-    in
-        ( { model
-          | menu = Nothing
-          , game = Just game
-          }
-        , Cmd.none
-        )
+    ( { model
+      | game = Maybe.map updateGameOnResumeClicked model.game
+      }
+    , Cmd.none
+    )

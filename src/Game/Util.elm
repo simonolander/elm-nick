@@ -1,7 +1,9 @@
 module Game.Util exposing (..)
 
+import Array
 import Model exposing (..)
 import Constants exposing (..)
+import RemoteData exposing (RemoteData(NotAsked))
 
 
 getGameWidth : Game -> GameWidth
@@ -98,3 +100,68 @@ settingsToCharacters numberOfCharacters lives settings =
         settings
         |> List.take numberOfCharacters
         |> List.indexedMap characterSettingToCharacter
+
+
+initializeGame : GameMode -> Model -> (Model, Cmd Msg)
+initializeGame gameMode model =
+    let
+        settings = model.settings
+        footballs =
+            []
+        defaultLives =
+            { max = 3
+            , current = 3
+            }
+        lives =
+            case gameMode of
+                SinglePlayerFree ->
+                    Nothing
+                SinglePlayerSurvival ->
+                    Just defaultLives
+                MultiplayerCooperation ->
+                    Just defaultLives
+                MultiplayerFree ->
+                    Nothing
+                LastManStanding ->
+                    Nothing
+
+        firstCharacterSetting =
+            Array.get 0 model.settings.characterSettings
+            |> Maybe.withDefault
+                { leftKeyCode = 37
+                , rightKeyCode = 39
+                }
+
+        characters =
+            case gameMode of
+                SinglePlayerFree ->
+                    settingsToCharacters 2 Nothing [firstCharacterSetting, firstCharacterSetting]
+                SinglePlayerSurvival ->
+                    settingsToCharacters 2 Nothing [firstCharacterSetting, firstCharacterSetting]
+                MultiplayerCooperation ->
+                    settingsToCharacters model.settings.numberOfPlayers Nothing (Array.toList model.settings.characterSettings)
+                MultiplayerFree ->
+                    settingsToCharacters model.settings.numberOfPlayers Nothing (Array.toList model.settings.characterSettings)
+                LastManStanding ->
+                    settingsToCharacters model.settings.numberOfPlayers (Just defaultLives) (Array.toList model.settings.characterSettings)
+
+        game =
+            { score = 0
+            , footballs = footballs
+            , characters = characters
+            , gameState = Running
+            , gameTime = 0
+            , footballGenerationTime = settings.footballGenerationTime
+            , remainingFootballGenerationTime = 3
+            , numberOfDroppedFootballs = 0
+            , gameMode = gameMode
+            , lives = lives
+            , scoreboard = NotAsked
+            }
+    in
+        ( { model
+          | menu = Nothing
+          , game = Just game
+          }
+        , Cmd.none
+        )
