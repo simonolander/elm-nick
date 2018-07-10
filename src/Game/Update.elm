@@ -99,11 +99,23 @@ nickFootballs diff game =
                 case characters of
                     (character :: tail) ->
                         let
-                            x = getCharacterCenterX character
-                            minX = x - characterHeight / 2
-                            maxX = x + characterHeight / 2
-                            characterIsAlive = isCharacterAlive character
-                            isNicked = characterIsAlive && football.x >= minX && football.x <= maxX
+                            (GameCoordinate footballX _) =
+                                football.position
+
+                            x =
+                                getCharacterCenterX character
+
+                            minX =
+                                x - characterHeight / 2
+
+                            maxX =
+                                x + characterHeight / 2
+
+                            characterIsAlive =
+                                isCharacterAlive character
+
+                            isNicked =
+                                characterIsAlive && footballX >= minX && footballX <= maxX
                         in
                             if isNicked then
                                 ( True
@@ -132,7 +144,7 @@ nickFootballs diff game =
                         (footballs__, chars__, commands) = nickFootballs tail chars_
                     in
                         if isNicked then
-                            (footballs__, chars__, generateFootball (GameCoordinate football.x football.y) game :: commands)
+                            (footballs__, chars__, generateFootball football.position game :: commands)
                         else
                             (football :: footballs__, chars__, commands)
                 [] ->
@@ -393,10 +405,8 @@ updateGameOnFootballGenerated football game =
 
 
 generateFootball : GameCoordinate -> Game -> Cmd Msg
-generateFootball pos game =
+generateFootball position game =
     let
-        (GameCoordinate x y) = pos
-
         boardIndex : Random.Generator Int
         boardIndex =
             game.characters
@@ -415,24 +425,22 @@ generateFootball pos game =
             Random.float 1.5 3.0
 
         velocity : Random.Generator GameVelocity
-        velocity = Random.map2 (getVelocity pos) destination time
+        velocity = Random.map2 (getVelocity position) destination time
 
         vr : Random.Generator Float
         vr = Random.float 0 360
 
-        f x y r (GameVelocity vx vy) vr =
-            { x = x
-            , y = y
+        f position r velocity vr =
+            { position = position
+            , velocity = velocity
             , r = r
-            , vx = vx
-            , vy = vy
             , vr = vr
             }
 
         football : Random.Generator Football
         football =
             Random.map2
-                (f x y 0)
+                (f position 0)
                 velocity
                 vr
     in
@@ -441,7 +449,10 @@ generateFootball pos game =
 
 isFootballDropped : Football -> Bool
 isFootballDropped football =
-    football.y < 0
+    let
+        (GameCoordinate _ y) = football.position
+    in
+        y < 0
 
 
 decreaseLives : Int -> Lives -> Lives
@@ -453,17 +464,24 @@ decreaseLives numberOfLives lives =
 
 moveFootball : Time -> Football -> Football
 moveFootball dt football =
-    { football
-    | x = football.x + football.vx * dt
-    , y = football.y + football.vy * dt
-    , vy = football.vy + gravity * dt
-    , r = football.r + football.vr * dt
-    }
+    let
+        (GameCoordinate x y) = football.position
+        (GameVelocity vx vy) = football.velocity
+    in
+        { football
+        | position = GameCoordinate (x + vx * dt) (y + vy * dt)
+        , velocity = GameVelocity vx (vy + gravity * dt)
+        , r = football.r + football.vr * dt
+        }
 
 
 isFootballNickable : Time -> Football -> Bool
 isFootballNickable dt football =
-    football.vy < 0 && football.y >= characterHeight && football.y + football.vy * dt <= characterHeight
+    let
+        (GameCoordinate x y) = football.position
+        (GameVelocity _ vy) = football.velocity
+    in
+        vy < 0 && y >= characterHeight && y + vy * dt <= characterHeight
 
 
 isOutOfLives : Lives -> Bool

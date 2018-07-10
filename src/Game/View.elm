@@ -417,9 +417,10 @@ renderHUD game =
 renderFootball : (GameCoordinate -> ViewBoxCoordinate) -> Football -> Svg.Styled.Svg msg
 renderFootball gameToViewBoxCoordinate football =
     let
-        (ViewBoxCoordinate wcx wcy) = gameToViewBoxCoordinate (GameCoordinate football.x football.y)
-        (ViewBoxCoordinate wtlx wtly) = gameToViewBoxCoordinate (GameCoordinate (football.x - footballRadius) (football.y + footballRadius))
-        (ViewBoxCoordinate wbrx wbry) = gameToViewBoxCoordinate (GameCoordinate (football.x + footballRadius) (football.y - footballRadius))
+        (GameCoordinate gcx gcy) = football.position
+        (ViewBoxCoordinate wcx wcy) = gameToViewBoxCoordinate football.position
+        (ViewBoxCoordinate wtlx wtly) = gameToViewBoxCoordinate (GameCoordinate (gcx - footballRadius) (gcy + footballRadius))
+        (ViewBoxCoordinate wbrx wbry) = gameToViewBoxCoordinate (GameCoordinate (gcx + footballRadius) (gcy - footballRadius))
         width = wbrx - wtlx
         height = wbry - wtly
         angle = football.r

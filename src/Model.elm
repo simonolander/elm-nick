@@ -13,8 +13,14 @@ type GameState =
     | Paused
     | GameOver
 
+{-
+GameCoordinate represents a coordinate in game space and is used in the game physics.
+-}
 type GameCoordinate = GameCoordinate Float Float
 
+{-
+ViewBoxCoordinate represents a coordinate in SVG space and is used in rendering.
+-}
 type ViewBoxCoordinate = ViewBoxCoordinate Float Float
 
 type GameVelocity = GameVelocity Float Float
@@ -97,11 +103,9 @@ type alias Character =
     }
 
 type alias Football =
-    { x: Float
-    , y: Float
+    { position: GameCoordinate
     , r: Float
-    , vx: Float
-    , vy: Float
+    , velocity: GameVelocity
     , vr: Float
     }
 

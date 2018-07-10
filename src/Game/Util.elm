@@ -78,9 +78,15 @@ x(t) = vx * t + px
 getXWhenNickable : Football -> Float
 getXWhenNickable football =
     let
-        t = -(football.vy / gravity) + sqrt( (football.vy / gravity)^2 + (characterHeight - football.y) * 2 / gravity )
+        (GameCoordinate x y) =
+            football.position
+
+        (GameVelocity vx vy) =
+            football.velocity
+
+        t = -(vy / gravity) + sqrt( (vy / gravity)^2 + (characterHeight - y) * 2 / gravity )
     in
-        football.vx * t + football.x
+        vx * t + x
 
 
 settingsToCharacters : Int -> Maybe Lives -> List CharacterSetting -> List Character
