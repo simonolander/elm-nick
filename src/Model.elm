@@ -15,7 +15,7 @@ type GameState =
 
 type GameCoordinate = GameCoordinate Float Float
 
-type WindowCoordinate = WindowCoordinate Float Float
+type ViewBoxCoordinate = ViewBoxCoordinate Float Float
 
 type GameVelocity = GameVelocity Float Float
 
