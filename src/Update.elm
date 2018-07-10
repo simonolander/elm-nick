@@ -11,7 +11,7 @@ import Game.Update exposing (..)
 import Random
 import RemoteData exposing (RemoteData(Loading, NotAsked))
 import Rest exposing (getScores, postScore)
-import Util exposing (settingsToCharacters)
+import Util exposing (batch, chain, settingsToCharacters)
 
 
 update : Msg -> Model -> (Model, Cmd Msg)
@@ -165,38 +165,29 @@ update msg model =
 updateOnTick : Time -> Model -> (Model, Cmd Msg)
 updateOnTick diff model =
     let
-        setFrameRate frameRate model =
-            { model | frameRate = frameRate }
-
-        setGame game model =
-            { model | game = game }
-
-        chain : (model -> field) -> (field -> model -> model) -> (field -> (field, Cmd msg)) -> (model, Cmd msg) -> (model, Cmd msg)
-        chain getter setter transform (model, cmd) =
-            let
-                (newField, newCmd) =
-                    transform (getter model)
-            in
-                (setter newField model, Cmd.batch [cmd, newCmd])
-
-        updateGame : Time -> Maybe Game -> (Maybe Game, Cmd Msg)
-        updateGame diff maybeGame =
-            case maybeGame of
+        updateGame : Time -> Model -> (Model, List (Cmd Msg))
+        updateGame diff model =
+            case model.game of
                 Just game ->
                     let
                         (newGame, cmd) = updateGameOnTick diff game
                     in
-                        (Just newGame, cmd)
+                        ( { model
+                          | game = Just newGame
+                          }
+                        , [cmd]
+                        )
                 Nothing ->
-                    (Nothing, Cmd.none)
+                    ( model, [] )
+
+        newModel =
+            { model
+            | frameRate = diff
+            }
     in
-        (model, Cmd.none)
-        |> chain .frameRate setFrameRate (always (diff, Cmd.none))
-        |> chain .game setGame (updateGame diff)
-
-
-
-
+        (newModel, [])
+        |> chain (updateGame diff)
+        |> batch
 
 updateOnKeyDown : KeyCode -> Model -> (Model, Cmd Msg)
 updateOnKeyDown keyCode model =

@@ -10,16 +10,16 @@ import Model exposing (..)
 view : Model -> Html Msg
 view model =
     let
-        frameRateDiv =
-            styled div
-                [ position absolute
-                , left (px 0)
-                , top (px 0)
-                , backgroundColor (rgb 255 255 255)
-                ]
-                []
-                [ text (toString model.frameRate)
-                ]
+--        frameRateDiv =
+--            styled div
+--                [ position absolute
+--                , left (px 0)
+--                , top (px 0)
+--                , backgroundColor (rgb 255 255 255)
+--                ]
+--                []
+--                [ text (toString model.frameRate)
+--                ]
 
         gameDiv =
             model.game
