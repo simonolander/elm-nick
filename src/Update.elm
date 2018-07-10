@@ -2,6 +2,7 @@ module Update exposing (..)
 
 import Array
 import Keyboard exposing (KeyCode)
+import Menu.Update exposing (updateMenu)
 import Model exposing (..)
 import PageVisibility exposing (Visibility(Hidden))
 import Time exposing (Time)
@@ -38,21 +39,7 @@ update msg model =
             updateOnResumeClicked model
 
         MenuNavigation menu ->
-            let
-                (newMenu, cmd) =
-                    case menu of
-                        HighscoreMenu gameMode _ ->
-                            (HighscoreMenu gameMode Loading, getScores gameMode)
-
-                        _ ->
-                            (menu, Cmd.none)
-            in
-                ( { model
-                  | menu = Just newMenu
-                  , game = Nothing
-                  }
-                , cmd
-                )
+            updateMenu menu model
 
         InitializeGame gameMode ->
             initializeGame gameMode model
@@ -188,6 +175,7 @@ updateOnTick diff model =
         (newModel, [])
         |> chain (updateGame diff)
         |> batch
+
 
 updateOnKeyDown : KeyCode -> Model -> (Model, Cmd Msg)
 updateOnKeyDown keyCode model =
