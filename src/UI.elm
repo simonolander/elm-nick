@@ -3,7 +3,7 @@ module UI exposing (..)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onInput)
-import Model exposing (Msg(UpdateUsername), Score)
+import Model exposing (..)
 import RemoteData exposing (WebData, RemoteData(..))
 
 primaryTheme : Color

@@ -5,6 +5,7 @@ import Keyboard exposing (KeyCode)
 import Menu.Update exposing (updateMenu)
 import Model exposing (..)
 import PageVisibility exposing (Visibility(Hidden))
+import Settings.Update exposing (..)
 import Time exposing (Time)
 import Constants exposing (..)
 import Game.Util exposing (..)
@@ -67,73 +68,13 @@ update msg model =
                 )
 
         UpdateUsername username ->
-            let
-                settings =
-                    model.settings
-
-                newSettings =
-                    { settings
-                    | username = username
-                    }
-            in
-                ( { model
-                  | settings = newSettings
-                  }
-                , Cmd.none
-                )
+            updateUsername username model
 
         UpdateNumberOfPlayers numberOfPlayers ->
-            let
-                settings =
-                    model.settings
-
-                newSettings =
-                    { settings
-                    | numberOfPlayers = numberOfPlayers
-                    }
-            in
-                ( { model
-                  | settings = newSettings
-                  }
-                , Cmd.none
-                )
+            updateNumberOfPlayers numberOfPlayers model
 
         UpdatePlayerControl index lane keyCode ->
-            let
-                settings =
-                    model.settings
-
-                characterSettings = settings.characterSettings
-
-                newCharacterSettings =
-                    case Array.get index characterSettings of
-                        Just setting ->
-                            let
-                                newSetting =
-                                    case lane of
-                                        Left ->
-                                            { setting
-                                            | leftKeyCode = keyCode
-                                            }
-                                        Right ->
-                                            { setting
-                                            | rightKeyCode = keyCode
-                                            }
-                            in
-                                Array.set index newSetting characterSettings
-                        Nothing ->
-                            characterSettings
-
-                newSettings =
-                    { settings
-                    | characterSettings = newCharacterSettings
-                    }
-            in
-                ( { model
-                  | settings = newSettings
-                  }
-                , Cmd.none
-                )
+            updatePlayerControl index lane keyCode model
 
         PostScore gameMode score ->
             let
