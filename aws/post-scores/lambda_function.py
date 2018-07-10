@@ -89,8 +89,18 @@ def lambda_handler(event, context):
         insert = "INSERT INTO scores (game, score, username, misc) VALUES (%s, %s, %s, %s)"
         cur.execute(insert, (game, score, username, misc))
         conn.commit()
-        select = "SELECT score, username, created_time, misc FROM scores WHERE game=%s ORDER BY score DESC"
-        cur.execute(select, (game,))
+        alt_select = """
+            SELECT score, username, created_time, misc FROM scores WHERE id IN (
+                SELECT MIN(id) FROM scores WHERE game=%s AND (username, score) IN (
+                    SELECT username, MAX(score) FROM scores WHERE game=%s GROUP BY username
+                )
+                GROUP BY username
+            )
+            ORDER BY score DESC
+            """
+        cur.execute(alt_select, (game, game))
+        # select = "SELECT score, username, created_time, misc FROM scores WHERE game=%s ORDER BY score DESC"
+        # cur.execute(select, (game,))
         for row in cur:
             scores.append({
                 "score": row[0],
