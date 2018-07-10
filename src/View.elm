@@ -10,27 +10,16 @@ import Model exposing (..)
 view : Model -> Html Msg
 view model =
     let
---        frameRateDiv =
---            styled div
---                [ position absolute
---                , left (px 0)
---                , top (px 0)
---                , backgroundColor (rgb 255 255 255)
---                ]
---                []
---                [ text (toString model.frameRate)
---                ]
-
         gameDiv =
             model.game
             |> Maybe.map (renderGame model.windowSize model.settings)
-            |> Maybe.withDefault (div [] [])
+            |> Maybe.withDefault (text "")
 
 
         menuDiv =
             model.menu
             |> Maybe.map (renderMenu model.settings)
-            |> Maybe.withDefault (div [] [])
+            |> Maybe.withDefault (text "")
     in
         styled div
             [ (width << px << toFloat) model.windowSize.width
@@ -43,5 +32,4 @@ view model =
             []
             [ gameDiv
             , menuDiv
---            , frameRateDiv
             ]
