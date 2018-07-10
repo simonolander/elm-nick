@@ -1,7 +1,8 @@
-module Game exposing (..)
+module Game.Util exposing (..)
 
 import Model exposing (..)
 import Constants exposing (..)
+
 
 getGameWidth : Game -> GameWidth
 getGameWidth game =
@@ -78,3 +79,22 @@ getXWhenNickable football =
         t = -(football.vy / gravity) + sqrt( (football.vy / gravity)^2 + (characterHeight - football.y) * 2 / gravity )
     in
         football.vx * t + football.x
+
+
+settingsToCharacters : Int -> Maybe Lives -> List CharacterSetting -> List Character
+settingsToCharacters numberOfCharacters lives settings =
+    let
+        characterSettingToCharacter index setting =
+            { lane = Left
+            , leftKeyCode = setting.leftKeyCode
+            , rightKeyCode = setting.rightKeyCode
+            , spriteAnimation = characterIdle
+            , boardIndex = index
+            , lives = lives
+            , timeOfDeath = Nothing
+            , numberOfNickedFootballs = 0
+            }
+    in
+        settings
+        |> List.take numberOfCharacters
+        |> List.indexedMap characterSettingToCharacter

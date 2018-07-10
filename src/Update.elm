@@ -7,12 +7,12 @@ import Model exposing (..)
 import PageVisibility exposing (Visibility(Hidden))
 import Time exposing (Time)
 import Constants exposing (..)
-import Game exposing (..)
+import Game.Util exposing (..)
 import Game.Update exposing (..)
 import Random
 import RemoteData exposing (RemoteData(Loading, NotAsked))
 import Rest exposing (getScores, postScore)
-import Util exposing (batch, chain, settingsToCharacters)
+import Util exposing (batch, chain)
 
 
 update : Msg -> Model -> (Model, Cmd Msg)

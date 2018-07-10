@@ -10,7 +10,7 @@ import Array
 import Keyboard exposing (KeyCode)
 import Model exposing (..)
 import Constants exposing (..)
-import Game exposing (..)
+import Game.Util exposing (..)
 import PageVisibility exposing (Visibility)
 import Random
 import RemoteData exposing (RemoteData(Loading, NotAsked))

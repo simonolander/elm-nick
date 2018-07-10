@@ -2,7 +2,7 @@ module Game.View exposing (renderGame)
 
 import Constants exposing (..)
 import Css exposing (..)
-import Game exposing (..)
+import Game.Util exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onClick, onInput)
 import Html.Styled.Attributes exposing (value, type_, action)

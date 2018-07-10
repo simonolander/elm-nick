@@ -186,25 +186,6 @@ goodKeys =
     ]
 
 
-settingsToCharacters : Int -> Maybe Lives -> List CharacterSetting -> List Character
-settingsToCharacters numberOfCharacters lives settings =
-    let
-        characterSettingToCharacter index setting =
-            { lane = Left
-            , leftKeyCode = setting.leftKeyCode
-            , rightKeyCode = setting.rightKeyCode
-            , spriteAnimation = characterIdle
-            , boardIndex = index
-            , lives = lives
-            , timeOfDeath = Nothing
-            , numberOfNickedFootballs = 0
-            }
-    in
-        settings
-        |> List.take numberOfCharacters
-        |> List.indexedMap characterSettingToCharacter
-
-
 randomSelection : a -> List a -> Random.Generator a
 randomSelection default list =
     let
