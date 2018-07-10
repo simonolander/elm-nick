@@ -19,7 +19,7 @@ type WindowCoordinate = WindowCoordinate Float Float
 
 type GameVelocity = GameVelocity Float Float
 
-type GameSize = GameSize Float Float
+type alias GameWidth = Float
 
 type alias Board =
     { index: Int

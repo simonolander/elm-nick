@@ -20,7 +20,7 @@ renderGame windowSize settings game =
     let
         w = toFloat windowSize.width
         h = toFloat windowSize.height
-        (GameSize gw gh) = getGameSize game
+        gw = getGameWidth game
 
         vpw = gw
         vph = h / w * vpw
@@ -512,22 +512,19 @@ renderCharacter g2w character =
                 x =
                     wbrx + width * 0.01
             in
-                Svg.Styled.g
-                    []
-                    (
-                    List.range 0 (lives.max - 1)
-                    |> List.map
-                        (\index ->
-                            Svg.Styled.image
-                                [ Svg.Styled.Attributes.x (toString x)
-                                , Svg.Styled.Attributes.y (toString (y index))
-                                , Svg.Styled.Attributes.width (toString h)
-                                , Svg.Styled.Attributes.height (toString h)
-                                , Svg.Styled.Attributes.xlinkHref (image index)
-                                , Svg.Styled.Attributes.preserveAspectRatio "none"]
-                                []
-                        )
+                List.range 0 (lives.max - 1)
+                |> List.map
+                    (\index ->
+                        Svg.Styled.image
+                            [ Svg.Styled.Attributes.x (toString x)
+                            , Svg.Styled.Attributes.y (toString (y index))
+                            , Svg.Styled.Attributes.width (toString h)
+                            , Svg.Styled.Attributes.height (toString h)
+                            , Svg.Styled.Attributes.xlinkHref (image index)
+                            , Svg.Styled.Attributes.preserveAspectRatio "none"]
+                            []
                     )
+                |> Svg.Styled.g []
     in
         case character.lives of
             Just lives ->

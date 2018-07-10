@@ -3,21 +3,15 @@ module Game exposing (..)
 import Model exposing (..)
 import Constants exposing (..)
 
-getGameSize : Game -> GameSize
-getGameSize game =
+getGameWidth : Game -> GameWidth
+getGameWidth game =
     let
         numberOfCharacters = game.characters
             |> List.length
             |> toFloat
         width = (boardMargin * 2 + boardWidth) * numberOfCharacters
-        highestFootball = game.footballs
-            |> List.map (.y)
-            |> List.maximum
-            |> Maybe.map ((+) footballRadius)
-            |> Maybe.withDefault 0
-        height = max (boardWidth / aspect) highestFootball
     in
-       GameSize width height
+       width
 
 
 getGameCharacterTop : Int -> Lane -> GameCoordinate
