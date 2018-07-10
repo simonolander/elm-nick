@@ -352,7 +352,7 @@ renderHUD game =
                         ]
                         []
                         ( List.range 1 lives.max
-                            |> List.map (\index -> if index <= lives.current then "/assets/red-heart.png" else "/assets/grey-heart.png")
+                            |> List.map (\index -> if index <= lives.current then redHeartImage else greyHeartImage)
                             |> List.map
                                 ( \filePath ->
                                     styled img
@@ -505,9 +505,9 @@ renderCharacter g2w character =
                     wbry - h - toFloat index * (h + characterHeight / toFloat lives.max * 0.05)
                 image index =
                     if index < lives.current then
-                        "/assets/red-heart.png"
+                        redHeartImage
                     else
-                        "/assets/grey-heart.png"
+                        greyHeartImage
                 x =
                     wbrx + width * 0.01
             in

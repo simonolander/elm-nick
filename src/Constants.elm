@@ -53,6 +53,14 @@ characterSitting =
     }
 
 
+redHeartImage : String
+redHeartImage = "/assets/red-heart.png"
+
+
+greyHeartImage : String
+greyHeartImage = "/assets/grey-heart.png"
+
+
 gravity : Float
 gravity = -10.0
 
