@@ -4,4 +4,5 @@ elm-stuff
 repl-temp-*
 # aws
 /aws
-rds_config.py
+# assets
+/assets
