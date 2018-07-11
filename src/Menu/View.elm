@@ -25,16 +25,7 @@ renderMenu settings menu =
         SinglePlayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Single Player"
-                , styled div
-                    [ width (pct 100)
-                    , color (rgb 255 255 255)
-                    , textShadow3 (px 1) (px 2) (rgb 0 0 0)
-                    , fontWeight bold
-                    , flexShrink (int 0)
-                    , fontFamily sansSerif
-                    ]
-                    []
-                    [ text "Left and right controls" ]
+                , UI.label "Left and right controls"
                 , settings.characterSettings
                     |> Array.toList
                     |> List.take 1
@@ -49,16 +40,7 @@ renderMenu settings menu =
         MultiplayerMenu ->
             UI.menu
                 [ UI.menuTitle [] "Multiplayer"
-                , styled div
-                    [ width (pct 100)
-                    , color (rgb 255 255 255)
-                    , textShadow3 (px 1) (px 2) (rgb 0 0 0)
-                    , fontWeight bold
-                    , flexShrink (int 0)
-                    , fontFamily sansSerif
-                    ]
-                    []
-                    [ text "Number of players" ]
+                , UI.label "Number of players"
                 , styled div
                     [ displayFlex
                     , flexDirection row
@@ -99,16 +81,7 @@ renderMenu settings menu =
 
                         )
                     ]
-                , styled div
-                    [ width (pct 100)
-                    , color (rgb 255 255 255)
-                    , textShadow3 (px 1) (px 2) (rgb 0 0 0)
-                    , fontWeight bold
-                    , fontFamily sansSerif
-                    , marginTop (px 8)
-                    ]
-                    []
-                    [ text "Left and right controls" ]
+                , UI.label "Left and right controls"
                 , settings.characterSettings
                     |> Array.toList
                     |> List.take settings.numberOfPlayers

@@ -255,3 +255,17 @@ leftRightControls characterSettings =
                     ]
             )
         )
+
+
+label : String -> Html msg
+label labelText =
+    styled div
+        [ width (pct 100)
+        , color (rgb 255 255 255)
+        , textShadow3 (px 1) (px 2) (rgb 0 0 0)
+        , fontWeight bold
+        , flexShrink (int 0)
+        , fontFamily sansSerif
+        ]
+        []
+        [ text labelText ]
