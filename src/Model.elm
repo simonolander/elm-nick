@@ -99,8 +99,8 @@ type alias Character =
 type alias Football =
     { position: GameCoordinate
     , velocity: GameVelocity
-    , r: Float
-    , vr: Float
+    , rotation: Float
+    , rotationSpeed: Float
     }
 
 type GameMode =

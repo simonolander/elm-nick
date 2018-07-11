@@ -424,22 +424,23 @@ generateFootball position game =
         velocity : Random.Generator GameVelocity
         velocity = Random.map2 (getVelocity position) destination time
 
-        vr : Random.Generator Float
-        vr = Random.float 0 360
+        rotationSpeed : Random.Generator Float
+        rotationSpeed = Random.float 0 360
 
-        f position r velocity vr =
+        createFootball : GameCoordinate -> Float -> GameVelocity -> Float -> Football
+        createFootball position rotation velocity rotationSpeed =
             { position = position
             , velocity = velocity
-            , r = r
-            , vr = vr
+            , rotation = rotation
+            , rotationSpeed = rotationSpeed
             }
 
         football : Random.Generator Football
         football =
             Random.map2
-                (f position 0)
+                (createFootball position 0)
                 velocity
-                vr
+                rotationSpeed
     in
         Random.generate FootballGenerated football
 
@@ -474,7 +475,7 @@ moveFootball dt football =
             { velocity
             | y = velocity.y + gravity * dt
             }
-        , r = football.r + football.vr * dt
+        , rotation = football.rotation + football.rotationSpeed * dt
         }
 
 
