@@ -25,7 +25,9 @@ getGameCharacterTop boardIndex lane =
         y =
             characterHeight
     in
-        GameCoordinate x y
+        { x = x
+        , y = y
+        }
 
 
 getCharacterCenterX : Character -> Float
@@ -53,15 +55,17 @@ y'(t) = gravity * t + (toY - fromY - gravity * time^2 / 2) / time
 y'(0) = (toY - fromY - gravity * time^2 / 2) / time
 -}
 getVelocity : GameCoordinate -> GameCoordinate -> Float -> GameVelocity
-getVelocity (GameCoordinate fromX fromY) (GameCoordinate toX toY) time =
+getVelocity from to time =
     let
-        vx : Float
-        vx = (toX - fromX) / time
+        vx =
+            (to.x - from.x) / time
 
-        vy : Float
-        vy = (toY - fromY - gravity * time^2 / 2) / time
+        vy =
+            (to.y - from.y - gravity * time^2 / 2) / time
     in
-        GameVelocity vx vy
+        { x = vx
+        , y = vy
+        }
 
 {-
 y''(t) = gravity
@@ -78,15 +82,9 @@ x(t) = vx * t + px
 getXWhenNickable : Football -> Float
 getXWhenNickable football =
     let
-        (GameCoordinate x y) =
-            football.position
-
-        (GameVelocity vx vy) =
-            football.velocity
-
-        t = -(vy / gravity) + sqrt( (vy / gravity)^2 + (characterHeight - y) * 2 / gravity )
+        t = -(football.velocity.y / gravity) + sqrt ( (football.velocity.y / gravity)^2 + (characterHeight - football.position.y) * 2 / gravity )
     in
-        vx * t + x
+        football.velocity.x * t + football.position.x
 
 
 settingsToCharacters : Int -> Maybe Lives -> List CharacterSetting -> List Character

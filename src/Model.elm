@@ -13,17 +13,22 @@ type GameState =
     | Paused
     | GameOver
 
+type alias XY =
+    { x: Float
+    , y: Float
+    }
+
 {-
 GameCoordinate represents a coordinate in game space and is used in the game physics.
 -}
-type GameCoordinate = GameCoordinate Float Float
+type alias GameCoordinate = XY
 
 {-
 ViewBoxCoordinate represents a coordinate in SVG space and is used in rendering.
 -}
-type ViewBoxCoordinate = ViewBoxCoordinate Float Float
+type alias ViewBoxCoordinate = XY
 
-type GameVelocity = GameVelocity Float Float
+type alias GameVelocity = XY
 
 type alias GameWidth = Float
 

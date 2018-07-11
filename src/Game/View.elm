@@ -26,12 +26,14 @@ renderGame windowSize settings game =
         viewBoxHeight = windowHeight / windowWidth * viewBoxWidth
 
         gameToViewBoxCoordinate : GameCoordinate -> ViewBoxCoordinate
-        gameToViewBoxCoordinate (GameCoordinate gameX gameY) =
+        gameToViewBoxCoordinate gameCoordinate =
             let
-                viewBoxX = gameX / gameWidth * viewBoxWidth
-                viewBoxY = viewBoxHeight - gameY
+                viewBoxX = gameCoordinate.x / gameWidth * viewBoxWidth
+                viewBoxY = viewBoxHeight - gameCoordinate.y
             in
-                ViewBoxCoordinate viewBoxX viewBoxY
+                { x = viewBoxX
+                , y = viewBoxY
+                }
 
         footballs =
             game.footballs
@@ -417,14 +419,32 @@ renderHUD game =
 renderFootball : (GameCoordinate -> ViewBoxCoordinate) -> Football -> Svg.Styled.Svg msg
 renderFootball gameToViewBoxCoordinate football =
     let
-        (GameCoordinate gcx gcy) = football.position
-        (ViewBoxCoordinate wcx wcy) = gameToViewBoxCoordinate football.position
-        (ViewBoxCoordinate wtlx wtly) = gameToViewBoxCoordinate (GameCoordinate (gcx - footballRadius) (gcy + footballRadius))
-        (ViewBoxCoordinate wbrx wbry) = gameToViewBoxCoordinate (GameCoordinate (gcx + footballRadius) (gcy - footballRadius))
-        width = wbrx - wtlx
-        height = wbry - wtly
-        angle = football.r
-        radius = width / 2
+        viewBoxCenter =
+            gameToViewBoxCoordinate football.position
+
+        viewBoxTopLeft =
+            gameToViewBoxCoordinate
+                { x = football.position.x - footballRadius
+                , y = football.position.y + footballRadius
+                }
+
+        viewBoxBottomRight =
+            gameToViewBoxCoordinate
+                { x = football.position.x + footballRadius
+                , y = football.position.y - footballRadius
+                }
+
+        width =
+            viewBoxBottomRight.x - viewBoxTopLeft.x
+
+        height =
+            viewBoxBottomRight.y - viewBoxTopLeft.y
+
+        angle =
+            football.r
+
+        radius =
+            width / 2
 
         footballImageSvg cx cy r rotation =
             Svg.Styled.image
@@ -440,17 +460,21 @@ renderFootball gameToViewBoxCoordinate football =
                 []
 
         result =
-            if wbry < 0
+            if viewBoxBottomRight.y < 0
             then
                 let
                     cx =
-                        wcx
+                        viewBoxCenter.x
+
                     outerRadius =
                         radius * 2
+
                     margin =
                         outerRadius * (sqrt 2 - 1) * 1.5
+
                     cy =
                         outerRadius + margin
+
                     d =
                         "M" ++ (toString cx) ++ "," ++ (toString margin) ++
                         "A" ++ (toString outerRadius) ++ " " ++ (toString outerRadius) ++ " 0 1 0 " ++ (toString (cx + outerRadius)) ++ " " ++ (toString cy) ++
@@ -471,7 +495,7 @@ renderFootball gameToViewBoxCoordinate football =
                         ]
 
             else
-                footballImageSvg wcx wcy radius angle
+                footballImageSvg viewBoxCenter.x viewBoxCenter.y radius angle
 
     in
         result
@@ -480,17 +504,34 @@ renderFootball gameToViewBoxCoordinate football =
 renderCharacter : (GameCoordinate -> ViewBoxCoordinate) -> Character -> Svg.Styled.Svg msg
 renderCharacter gameToViewBoxCoordinate character =
     let
-        (GameCoordinate gcx gty) = getGameCharacterTop character.boardIndex character.lane
-        (ViewBoxCoordinate wtlx wtly) = gameToViewBoxCoordinate (GameCoordinate (gcx - characterHeight / 2) (gty))
-        (ViewBoxCoordinate wbrx wbry) = gameToViewBoxCoordinate (GameCoordinate (gcx + characterHeight / 2) (gty - characterHeight))
-        width = wbrx - wtlx
-        height = wbry - wtly
-        currentFrame = character.spriteAnimation.currentFrame
+        gameTopCenter =
+            getGameCharacterTop character.boardIndex character.lane
+
+        viewBoxTopLeft =
+            gameToViewBoxCoordinate
+                { x = gameTopCenter.x - characterHeight / 2
+                , y = gameTopCenter.y
+                }
+
+        viewBoxBottomRight =
+            gameToViewBoxCoordinate
+                { x = gameTopCenter.x + characterHeight / 2
+                , y = gameTopCenter.y - characterHeight
+                }
+
+        width =
+            viewBoxBottomRight.x - viewBoxTopLeft.x
+
+        height =
+            viewBoxBottomRight.y - viewBoxTopLeft.y
+
+        currentFrame =
+            character.spriteAnimation.currentFrame
 
         characterSprite =
             Svg.Styled.image
-                [ Svg.Styled.Attributes.x (toString wtlx)
-                , Svg.Styled.Attributes.y (toString wtly)
+                [ Svg.Styled.Attributes.x (toString viewBoxTopLeft.x)
+                , Svg.Styled.Attributes.y (toString viewBoxTopLeft.y)
                 , Svg.Styled.Attributes.width (toString width)
                 , Svg.Styled.Attributes.height (toString height)
                 , Svg.Styled.Attributes.xlinkHref currentFrame
@@ -503,14 +544,14 @@ renderCharacter gameToViewBoxCoordinate character =
                 h =
                     characterHeight / toFloat lives.max * 0.95
                 y index =
-                    wbry - h - toFloat index * (h + characterHeight / toFloat lives.max * 0.05)
+                    viewBoxBottomRight.y - h - toFloat index * (h + characterHeight / toFloat lives.max * 0.05)
                 image index =
                     if index < lives.current then
                         redHeartImage
                     else
                         greyHeartImage
                 x =
-                    wbrx + width * 0.01
+                    viewBoxBottomRight.x + width * 0.01
             in
                 List.range 0 (lives.max - 1)
                 |> List.map
@@ -540,21 +581,27 @@ renderCharacter gameToViewBoxCoordinate character =
 renderDivider : (GameCoordinate -> ViewBoxCoordinate) -> Float ->  Svg.Styled.Svg msg
 renderDivider gameToViewBoxCoordinate x =
     let
-        (ViewBoxCoordinate wtlx wtly) =
-            gameToViewBoxCoordinate (GameCoordinate (x - characterHeight / 2) characterHeight)
+        viewBoxTopLeft =
+            gameToViewBoxCoordinate
+                { x = x - characterHeight / 2
+                , y = characterHeight
+                }
 
-        (ViewBoxCoordinate wbrx wbry) =
-            gameToViewBoxCoordinate (GameCoordinate (x + characterHeight / 2) 0)
+        viewBoxBottomRight =
+            gameToViewBoxCoordinate
+                { x = x + characterHeight / 2
+                , y = 0
+                }
 
         width =
-            wbrx - wtlx
+            viewBoxBottomRight.x - viewBoxTopLeft.x
 
         height =
-            wbry - wtly
+            viewBoxBottomRight.y - viewBoxTopLeft.y
     in
         Svg.Styled.image
-            [ Svg.Styled.Attributes.x (toString wtlx)
-            , Svg.Styled.Attributes.y (toString wtly)
+            [ Svg.Styled.Attributes.x (toString viewBoxTopLeft.x)
+            , Svg.Styled.Attributes.y (toString viewBoxTopLeft.y)
             , Svg.Styled.Attributes.width (toString width)
             , Svg.Styled.Attributes.height (toString height)
             , Svg.Styled.Attributes.xlinkHref "/assets/fence.png"

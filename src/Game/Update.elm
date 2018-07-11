@@ -99,9 +99,6 @@ nickFootballs diff game =
                 case characters of
                     (character :: tail) ->
                         let
-                            (GameCoordinate footballX _) =
-                                football.position
-
                             x =
                                 getCharacterCenterX character
 
@@ -115,7 +112,7 @@ nickFootballs diff game =
                                 isCharacterAlive character
 
                             isNicked =
-                                characterIsAlive && footballX >= minX && footballX <= maxX
+                                characterIsAlive && football.position.x >= minX && football.position.x <= maxX
                         in
                             if isNicked then
                                 ( True
@@ -255,7 +252,7 @@ updateFootballGenerationTimer dt game =
             if game.remainingFootballGenerationTime - dt < 0
             then
                 ( game.remainingFootballGenerationTime - dt + game.footballGenerationTime
-                , [ generateFootball (GameCoordinate (-characterHeight) characterHeight) game ]
+                , [ generateFootball { x = -characterHeight, y = characterHeight } game ]
                 )
             else
                 (game.remainingFootballGenerationTime - dt, [])
@@ -449,10 +446,7 @@ generateFootball position game =
 
 isFootballDropped : Football -> Bool
 isFootballDropped football =
-    let
-        (GameCoordinate _ y) = football.position
-    in
-        y < 0
+    football.position.y < 0
 
 
 decreaseLives : Int -> Lives -> Lives
@@ -465,23 +459,28 @@ decreaseLives numberOfLives lives =
 moveFootball : Time -> Football -> Football
 moveFootball dt football =
     let
-        (GameCoordinate x y) = football.position
-        (GameVelocity vx vy) = football.velocity
+        position =
+            football.position
+
+        velocity =
+            football.velocity
     in
         { football
-        | position = GameCoordinate (x + vx * dt) (y + vy * dt)
-        , velocity = GameVelocity vx (vy + gravity * dt)
+        | position =
+            { x = position.x + velocity.x * dt
+            , y = position.y + velocity.y * dt
+            }
+        , velocity =
+            { velocity
+            | y = velocity.y + gravity * dt
+            }
         , r = football.r + football.vr * dt
         }
 
 
 isFootballNickable : Time -> Football -> Bool
 isFootballNickable dt football =
-    let
-        (GameCoordinate x y) = football.position
-        (GameVelocity _ vy) = football.velocity
-    in
-        vy < 0 && y >= characterHeight && y + vy * dt <= characterHeight
+    football.velocity.y < 0 && football.position.y >= characterHeight && football.position.y + football.velocity.y * dt <= characterHeight
 
 
 isOutOfLives : Lives -> Bool
