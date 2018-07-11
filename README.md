@@ -1,6 +1,6 @@
 # elm-nick
 
-A simple football game written in Elm. Try it out here 
+A cute football game written in Elm. Try it out here 
 
 http://elm-nick.simonolander.com/
 
