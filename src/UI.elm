@@ -129,7 +129,7 @@ scoreboard webData =
                     , width (pct 100)
                     ]
                     []
-                    [text "Loading scores..."]
+                    [text "Loading scores... be patient :)"]
                 ]
             Success scores ->
                 scores
