@@ -459,7 +459,7 @@ renderFootball gameToViewBoxCoordinate football =
                 ]
                 []
 
-        result =
+        footballOrOffScreenIndicator =
             if viewBoxBottomRight.y < 0
             then
                 let
@@ -498,7 +498,7 @@ renderFootball gameToViewBoxCoordinate football =
                 footballImageSvg viewBoxCenter.x viewBoxCenter.y radius angle
 
     in
-        result
+        footballOrOffScreenIndicator
 
 
 renderCharacter : (GameCoordinate -> ViewBoxCoordinate) -> Character -> Svg.Styled.Svg msg
