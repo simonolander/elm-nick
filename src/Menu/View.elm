@@ -30,10 +30,10 @@ renderMenu settings menu =
                     |> Array.toList
                     |> List.take 1
                     |> UI.leftRightControls
-                , styled div [ height (px 20) ] [] []
+                , UI.space
                 , UI.btn [ onClick (InitializeGame SinglePlayerSurvival)] "Survival"
                 , UI.btn [ onClick (InitializeGame SinglePlayerFree)] "Free Mode"
-                , styled div [ height (px 20) ] [] []
+                , UI.space
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
 
@@ -86,11 +86,11 @@ renderMenu settings menu =
                     |> Array.toList
                     |> List.take settings.numberOfPlayers
                     |> UI.leftRightControls
-                , styled div [ height (px 20) ] [] []
+                , UI.space
                 , UI.btn [ onClick (InitializeGame MultiplayerCooperation)] "Cooperation"
                 , UI.btn [ onClick (InitializeGame LastManStanding)] "Last Man Standing"
                 , UI.btn [ onClick (InitializeGame MultiplayerFree)] "Free Mode"
-                , styled div [ height (px 20) ] [] []
+                , UI.space
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
 
@@ -99,7 +99,7 @@ renderMenu settings menu =
                 [ UI.menuTitle "Highscores"
                 , UI.btn [ onClick (MenuNavigation (HighscoreMenu SinglePlayerSurvival NotAsked)) ] "Single Player Survival"
                 , UI.btn [ onClick (MenuNavigation (HighscoreMenu MultiplayerCooperation NotAsked)) ] "Multiplayer Cooperation"
-                , styled div [ height (px 20) ] [] []
+                , UI.space
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
 
@@ -112,7 +112,7 @@ renderHighscoresMenu gameMode webData =
     UI.menu
         [ UI.menuTitle (gameModeToString gameMode)
         , UI.scoreboard webData
-        , styled div [ height (px 20) ] [] []
+        , UI.space
         , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Back to Highscores"
         ]
 
@@ -129,9 +129,9 @@ renderMainMenu =
             []
         , UI.btn [ onClick (MenuNavigation SinglePlayerMenu)] "Single Player"
         , UI.btn [ onClick (MenuNavigation MultiplayerMenu)] "Multiplayer"
-        , styled div [ height (px 20) ] [] []
+        , UI.space
         , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Highscores"
-        , styled div [ height (px 20) ] [] []
+        , UI.space
         , styled div
             [ width (pct 100)
             , textAlign right

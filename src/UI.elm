@@ -269,3 +269,8 @@ label labelText =
         ]
         []
         [ text labelText ]
+
+
+space : Html msg
+space =
+    styled div [ height (px 20) ] [] []
