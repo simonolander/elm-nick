@@ -78,8 +78,7 @@ subscriptions model =
                 |> Maybe.map ((==) Running)
                 |> Maybe.withDefault False
             then
-                [ AnimationFrame.diffs Tick
-                ]
+                [ AnimationFrame.diffs Tick ]
             else
                 []
 
@@ -93,4 +92,4 @@ subscriptions model =
                 ]
 
     in
-    Sub.batch subs
+        Sub.batch subs
