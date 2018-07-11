@@ -97,8 +97,8 @@ renderMenu settings menu =
         SelectHighscoreMenu ->
             UI.menu
                 [ UI.menuTitle "Highscores"
-                , UI.btn [ onClick (MenuNavigation (HighscoreMenu SinglePlayerSurvival NotAsked)) ] "Single Player Survival"
-                , UI.btn [ onClick (MenuNavigation (HighscoreMenu MultiplayerCooperation NotAsked)) ] "Multiplayer Cooperation"
+                , UI.btn [ onClick (MenuNavigation (HighscoreMenu SinglePlayerSurvival NotAsked)) ] (gameModeToString SinglePlayerSurvival)
+                , UI.btn [ onClick (MenuNavigation (HighscoreMenu MultiplayerCooperation NotAsked)) ] (gameModeToString MultiplayerCooperation)
                 , UI.space
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
