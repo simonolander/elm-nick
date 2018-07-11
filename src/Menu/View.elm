@@ -16,12 +16,7 @@ renderMenu settings menu =
     case menu of
         MainMenu ->
             renderMainMenu
-        SettingsMenu ->
-            UI.menu
-                [ UI.menuTitle "Settings"
-                , UI.btn [ onClick (MenuNavigation MainMenu)] "Ok"
-                , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
-                ]
+
         SinglePlayerMenu ->
             UI.menu
                 [ UI.menuTitle "Single Player"

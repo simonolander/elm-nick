@@ -32,21 +32,10 @@ type alias GameVelocity = XY
 
 type alias GameWidth = Float
 
-type alias Board =
-    { index: Int
-    }
-
-type alias SizeF =
-    { width: Float
-    , height: Float
-    }
-
-type alias MaxCurrent =
+type alias Lives =
     { max: Int
     , current: Int
     }
-
-type alias Lives = MaxCurrent
 
 type alias Game =
     { score: Int
@@ -102,15 +91,15 @@ type alias Character =
     , rightKeyCode: KeyCode
     , spriteAnimation: SpriteAnimation
     , boardIndex: Int
-    , lives: Maybe MaxCurrent
+    , lives: Maybe Lives
     , timeOfDeath: Maybe Time
     , numberOfNickedFootballs: Int
     }
 
 type alias Football =
     { position: GameCoordinate
-    , r: Float
     , velocity: GameVelocity
+    , r: Float
     , vr: Float
     }
 
@@ -135,14 +124,10 @@ type alias Settings =
 
 type Menu =
     MainMenu
-    | SettingsMenu
     | MultiplayerMenu
     | SinglePlayerMenu
     | SelectHighscoreMenu
     | HighscoreMenu GameMode (WebData (List Score))
-
-
--- REST --
 
 type alias Score =
     { score: Int
