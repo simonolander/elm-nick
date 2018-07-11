@@ -529,15 +529,7 @@ renderCharacter gameToViewBoxCoordinate character =
             character.spriteAnimation.currentFrame
 
         characterSprite =
-            Svg.Styled.image
-                [ Svg.Styled.Attributes.x (toString viewBoxTopLeft.x)
-                , Svg.Styled.Attributes.y (toString viewBoxTopLeft.y)
-                , Svg.Styled.Attributes.width (toString width)
-                , Svg.Styled.Attributes.height (toString height)
-                , Svg.Styled.Attributes.xlinkHref currentFrame
-                , Svg.Styled.Attributes.imageRendering "pixelated"
-                , Svg.Styled.Attributes.preserveAspectRatio "none"
-                ] []
+            svgImage viewBoxTopLeft.x viewBoxTopLeft.y width height currentFrame
 
         renderHearts lives =
             let
@@ -554,17 +546,7 @@ renderCharacter gameToViewBoxCoordinate character =
                     viewBoxBottomRight.x + width * 0.01
             in
                 List.range 0 (lives.max - 1)
-                |> List.map
-                    (\index ->
-                        Svg.Styled.image
-                            [ Svg.Styled.Attributes.x (toString x)
-                            , Svg.Styled.Attributes.y (toString (y index))
-                            , Svg.Styled.Attributes.width (toString h)
-                            , Svg.Styled.Attributes.height (toString h)
-                            , Svg.Styled.Attributes.xlinkHref (image index)
-                            , Svg.Styled.Attributes.preserveAspectRatio "none"]
-                            []
-                    )
+                |> List.map ( \index -> svgImage x (y index) h h (image index) )
                 |> Svg.Styled.g []
     in
         case character.lives of
@@ -599,15 +581,20 @@ renderDivider gameToViewBoxCoordinate x =
         height =
             viewBoxBottomRight.y - viewBoxTopLeft.y
     in
-        Svg.Styled.image
-            [ Svg.Styled.Attributes.x (toString viewBoxTopLeft.x)
-            , Svg.Styled.Attributes.y (toString viewBoxTopLeft.y)
-            , Svg.Styled.Attributes.width (toString width)
-            , Svg.Styled.Attributes.height (toString height)
-            , Svg.Styled.Attributes.xlinkHref "/assets/fence.png"
-            , Svg.Styled.Attributes.imageRendering "pixelated"
-            , Svg.Styled.Attributes.preserveAspectRatio "none"
-            ] []
+        svgImage viewBoxTopLeft.x viewBoxTopLeft.y width height "/assets/fence.png"
+
+
+svgImage : Float -> Float -> Float -> Float -> String -> Svg.Styled.Svg msg
+svgImage x y width height xlinkHref =
+    Svg.Styled.image
+        [ Svg.Styled.Attributes.x (toString x)
+        , Svg.Styled.Attributes.y (toString y)
+        , Svg.Styled.Attributes.width (toString width)
+        , Svg.Styled.Attributes.height (toString height)
+        , Svg.Styled.Attributes.xlinkHref xlinkHref
+        , Svg.Styled.Attributes.imageRendering "pixelated"
+        , Svg.Styled.Attributes.preserveAspectRatio "none"
+        ] []
 
 
 sortTimeOfDeath : Character -> Character -> Order
