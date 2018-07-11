@@ -4,4 +4,15 @@ A simple football game written in Elm. Try it out here
 
 http://elm-nick.simonolander.com/
 
-The code is a complete mess, I *just* finished it. I'll clean it up this week. 😅
+#####Notable packages used
+* elm-lang/svg for rendering the game
+* elm-lang/http and krisajenkins/remotedata for REST calls
+* rtfeldman/elm-css for css
+* elm-lang/page-visibility for determining for detecting window switches
+
+#####Other techniques used
+* AWS RDS, Lambda and API Gateway for storing/accessing highscores
+* AWS S3 for web hosting
+
+#####Tools
+* Piskel for drawing the pixel art
