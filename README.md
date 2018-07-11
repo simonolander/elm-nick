@@ -4,6 +4,8 @@ A simple football game written in Elm. Try it out here
 
 http://elm-nick.simonolander.com/
 
+![Gameplay](/screen-shot.png "Screen shot of the game")
+
 ##### Notable packages used
 * elm-lang/svg for rendering the game
 * elm-lang/http and krisajenkins/remotedata for REST calls
