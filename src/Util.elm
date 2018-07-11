@@ -124,6 +124,7 @@ randomSelection default list =
     in
         Random.map get index
 
+
 gameModeToString : GameMode -> String
 gameModeToString gameMode =
     case gameMode of
