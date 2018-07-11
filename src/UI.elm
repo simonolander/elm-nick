@@ -3,8 +3,10 @@ module UI exposing (..)
 import Css exposing (..)
 import Html.Styled exposing (..)
 import Html.Styled.Events exposing (onInput)
+import Html.Styled.Attributes exposing (title, value, selected)
 import Model exposing (..)
 import RemoteData exposing (WebData, RemoteData(..))
+import Constants exposing (goodKeys)
 
 primaryTheme : Color
 primaryTheme =
@@ -86,7 +88,6 @@ menu content =
             , displayFlex
             , overflow auto
             , alignItems center
---            , justifyContent center
             , flexDirection column
             ]
             []
@@ -179,4 +180,78 @@ scoreboard webData =
                     []
                     [text ("Could not load scores: " ++ toString error)]
                 ]
+        )
+
+
+leftRightControls : List CharacterSetting -> Html Msg
+leftRightControls characterSettings =
+    styled div
+        [ displayFlex
+        , flexDirection column
+        , flexShrink (int 0)
+        , width (pct 100)
+        ]
+        []
+        (
+        characterSettings
+        |> List.indexedMap
+            (\index setting ->
+                styled div
+                    [ displayFlex
+                    , flexDirection row
+                    , justifyContent spaceBetween
+                    , marginBottom (px 4)
+                    ]
+                    []
+                    [ styled select
+                        [ fontSize (px 18)
+                        , color (rgb 51 51 51)
+                        , border3 (px 1) solid (rgb 191 191 191)
+                        , borderRadius (px 8)
+                        , padding2 (px 5) (px 10)
+                        , height (px 48)
+                        , backgroundColor (rgb 255 255 255)
+                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                        , flex (int 1)
+                        , marginRight (px 8)
+                        ]
+                        [ onInput (\ intString -> UpdatePlayerControl index Left (Result.withDefault 37 (String.toInt intString)))
+                        , title ("Left key for Player " ++ toString (index + 1))
+                        ]
+                        ( goodKeys
+                            |> List.map
+                                (\(num, label) ->
+                                    option
+                                        [ value (toString num)
+                                        , selected (num == setting.leftKeyCode)
+                                        ]
+                                        [ text label ]
+                                )
+                        )
+                    , styled select
+                        [ fontSize (px 18)
+                        , color (rgb 51 51 51)
+                        , border3 (px 1) solid (rgb 191 191 191)
+                        , borderRadius (px 8)
+                        , padding2 (px 5) (px 10)
+                        , height (px 48)
+                        , backgroundColor (rgb 255 255 255)
+                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
+                        , flex (int 1)
+                        ]
+                        [ onInput (\ intString -> UpdatePlayerControl index Right (Result.withDefault 39 (String.toInt intString)))
+                        , title ("Right key for Player " ++ toString (index + 1))
+                        ]
+                        ( goodKeys
+                            |> List.map
+                                (\(num, label) ->
+                                    option
+                                        [ value (toString num)
+                                        , selected (num == setting.rightKeyCode)
+                                        ]
+                                        [ text label ]
+                                )
+                        )
+                    ]
+            )
         )

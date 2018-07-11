@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Model exposing (..)
 import RemoteData exposing (..)
 import UI
-import Util exposing (filterMaybe, gameModeToString, goodKeys)
+import Util exposing (filterMaybe, gameModeToString)
 
 
 renderMenu : Settings -> Menu -> Html Msg
@@ -35,64 +35,10 @@ renderMenu settings menu =
                     ]
                     []
                     [ text "Left and right controls" ]
-                , styled div
-                    [ displayFlex
-                    , flexDirection row
-                    , justifyContent spaceBetween
-                    , flexShrink (int 0)
-                    , width (pct 100)
-                    ]
-                    []
-                    [ styled select
-                        [ fontSize (px 18)
-                        , color (rgb 51 51 51)
-                        , border3 (px 1) solid (rgb 191 191 191)
-                        , borderRadius (px 8)
-                        , padding2 (px 5) (px 10)
-                        , height (px 48)
-                        , backgroundColor (rgb 255 255 255)
-                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
-                        , flex (int 1)
-                        , marginRight (px 8)
-                        ]
-                        [ onInput (\ intString -> UpdatePlayerControl 0 Left (Result.withDefault 37 (String.toInt intString)))
-                        , title ("Left key for Player 1")
-                        ]
-                        ( goodKeys
-                            |> List.map
-                                (\(num, label) ->
-                                    option
-                                        [ value (toString num)
-                                        , selected (Array.get 0 settings.characterSettings |> Maybe.map (.leftKeyCode) |> Maybe.map ((==) num) |> Maybe.withDefault False)
-                                        ]
-                                        [ text label ]
-                                )
-                        )
-                    , styled select
-                        [ fontSize (px 18)
-                        , color (rgb 51 51 51)
-                        , border3 (px 1) solid (rgb 191 191 191)
-                        , borderRadius (px 8)
-                        , padding2 (px 5) (px 10)
-                        , height (px 48)
-                        , backgroundColor (rgb 255 255 255)
-                        , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
-                        , flex (int 1)
-                        ]
-                        [ onInput (\ intString -> UpdatePlayerControl 0 Right (Result.withDefault 39 (String.toInt intString)))
-                        , title ("Right key for Player 1")
-                        ]
-                        ( goodKeys
-                            |> List.map
-                                (\(num, label) ->
-                                    option
-                                        [ value (toString num)
-                                        , selected (Array.get 0 settings.characterSettings |> Maybe.map (.rightKeyCode) |> Maybe.map ((==) num) |> Maybe.withDefault False)
-                                        ]
-                                        [ text label ]
-                                )
-                        )
-                    ]
+                , settings.characterSettings
+                    |> Array.toList
+                    |> List.take 1
+                    |> UI.leftRightControls
                 , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick (InitializeGame SinglePlayerSurvival)] "Survival"
                 , UI.btn [ onClick (InitializeGame SinglePlayerFree)] "Free Mode"
@@ -163,78 +109,10 @@ renderMenu settings menu =
                     ]
                     []
                     [ text "Left and right controls" ]
-                , styled div
-                    [ displayFlex
-                    , flexDirection column
-                    , flexShrink (int 0)
-                    , width (pct 100)
-                    ]
-                    []
-                    (
-                    settings.characterSettings
+                , settings.characterSettings
                     |> Array.toList
                     |> List.take settings.numberOfPlayers
-                    |> List.indexedMap
-                        (\index setting ->
-                            styled div
-                                [ displayFlex
-                                , flexDirection row
-                                , justifyContent spaceBetween
-                                , marginBottom (px 4)
-                                ]
-                                []
-                                [ styled select
-                                    [ fontSize (px 18)
-                                    , color (rgb 51 51 51)
-                                    , border3 (px 1) solid (rgb 191 191 191)
-                                    , borderRadius (px 8)
-                                    , padding2 (px 5) (px 10)
-                                    , height (px 48)
-                                    , backgroundColor (rgb 255 255 255)
-                                    , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
-                                    , flex (int 1)
-                                    , marginRight (px 8)
-                                    ]
-                                    [ onInput (\ intString -> UpdatePlayerControl index Left (Result.withDefault 37 (String.toInt intString)))
-                                    , title ("Left key for Player " ++ toString (index + 1))
-                                    ]
-                                    ( goodKeys
-                                        |> List.map
-                                            (\(num, label) ->
-                                                option
-                                                    [ value (toString num)
-                                                    , selected (num == setting.leftKeyCode)
-                                                    ]
-                                                    [ text label ]
-                                            )
-                                    )
-                                , styled select
-                                    [ fontSize (px 18)
-                                    , color (rgb 51 51 51)
-                                    , border3 (px 1) solid (rgb 191 191 191)
-                                    , borderRadius (px 8)
-                                    , padding2 (px 5) (px 10)
-                                    , height (px 48)
-                                    , backgroundColor (rgb 255 255 255)
-                                    , boxShadow6 inset (px 0) (px 3) (px 0) (px 0) (rgb 235 235 235)
-                                    , flex (int 1)
-                                    ]
-                                    [ onInput (\ intString -> UpdatePlayerControl index Right (Result.withDefault 39 (String.toInt intString)))
-                                    , title ("Right key for Player " ++ toString (index + 1))
-                                    ]
-                                    ( goodKeys
-                                        |> List.map
-                                            (\(num, label) ->
-                                                option
-                                                    [ value (toString num)
-                                                    , selected (num == setting.rightKeyCode)
-                                                    ]
-                                                    [ text label ]
-                                            )
-                                    )
-                                ]
-                        )
-                    )
+                    |> UI.leftRightControls
                 , styled div [ height (px 20) ] [] []
                 , UI.btn [ onClick (InitializeGame MultiplayerCooperation)] "Cooperation"
                 , UI.btn [ onClick (InitializeGame LastManStanding)] "Last Man Standing"
@@ -298,6 +176,5 @@ renderMainMenu =
                 ]
                 [ text "Source code" ]
             ]
---        , UI.btn [ onClick (MenuNavigation SettingsMenu)] "Settings"
         ]
 
