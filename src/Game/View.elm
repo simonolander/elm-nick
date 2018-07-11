@@ -69,7 +69,7 @@ renderGame windowSize settings game =
             case game.gameState of
                 Paused ->
                     UI.menu
-                        [ UI.menuTitle [] "Paused"
+                        [ UI.menuTitle "Paused"
                         , UI.btn [ onClick ResumeClicked] "Resume"
                         , UI.btn [ onClick (InitializeGame game.gameMode)] "Restart"
                         , styled div [ height (px 20) ] [] []
@@ -77,7 +77,7 @@ renderGame windowSize settings game =
                         ]
                 GameOver ->
                     UI.menu
-                        [ UI.menuTitle [] ("Score " ++ (toString game.score))
+                        [ UI.menuTitle ("Score " ++ (toString game.score))
                         , styled div
                             [ width (pct 100)
                             , color (rgb 255 255 255)

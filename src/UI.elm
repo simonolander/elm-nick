@@ -17,7 +17,7 @@ secondaryTheme =
     hex "004cc9"
 
 btn : List (Attribute msg) -> String -> Html msg
-btn attributes content =
+btn attributes buttonText =
     styled
         button
             [ hover
@@ -44,12 +44,12 @@ btn attributes content =
             , marginTop (px 8)
             ]
         attributes
-        [ text content
+        [ text buttonText
         ]
 
 
-menuTitle : List (Attribute msg) -> String -> Html msg
-menuTitle attributes content =
+menuTitle : String -> Html msg
+menuTitle menuTitleText =
     styled
         h1
             [ fontSize xxLarge
@@ -58,8 +58,8 @@ menuTitle attributes content =
             , fontWeight bold
             , fontFamily sansSerif
             ]
-        attributes
-        [ text content
+        []
+        [ text menuTitleText
         ]
 
 

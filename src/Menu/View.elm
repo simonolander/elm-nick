@@ -18,13 +18,13 @@ renderMenu settings menu =
             renderMainMenu
         SettingsMenu ->
             UI.menu
-                [ UI.menuTitle [] "Settings"
+                [ UI.menuTitle "Settings"
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Ok"
                 , UI.btn [ onClick (MenuNavigation MainMenu)] "Back to Main Menu"
                 ]
         SinglePlayerMenu ->
             UI.menu
-                [ UI.menuTitle [] "Single Player"
+                [ UI.menuTitle "Single Player"
                 , UI.label "Left and right controls"
                 , settings.characterSettings
                     |> Array.toList
@@ -39,7 +39,7 @@ renderMenu settings menu =
 
         MultiplayerMenu ->
             UI.menu
-                [ UI.menuTitle [] "Multiplayer"
+                [ UI.menuTitle "Multiplayer"
                 , UI.label "Number of players"
                 , styled div
                     [ displayFlex
@@ -96,7 +96,7 @@ renderMenu settings menu =
 
         SelectHighscoreMenu ->
             UI.menu
-                [ UI.menuTitle [] "Highscores"
+                [ UI.menuTitle "Highscores"
                 , UI.btn [ onClick (MenuNavigation (HighscoreMenu SinglePlayerSurvival NotAsked)) ] "Single Player Survival"
                 , UI.btn [ onClick (MenuNavigation (HighscoreMenu MultiplayerCooperation NotAsked)) ] "Multiplayer Cooperation"
                 , styled div [ height (px 20) ] [] []
@@ -110,7 +110,7 @@ renderMenu settings menu =
 renderHighscoresMenu : GameMode -> WebData (List Score) -> Html Msg
 renderHighscoresMenu gameMode webData =
     UI.menu
-        [ UI.menuTitle [] (gameModeToString gameMode)
+        [ UI.menuTitle (gameModeToString gameMode)
         , UI.scoreboard webData
         , styled div [ height (px 20) ] [] []
         , UI.btn [ onClick (MenuNavigation SelectHighscoreMenu)] "Back to Highscores"
