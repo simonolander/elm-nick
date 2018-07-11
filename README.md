@@ -4,6 +4,8 @@ A cute football game written in Elm. Try it out here
 
 http://elm-nick.simonolander.com/
 
+You need a keyboard
+
 ![Gameplay](/screen-shot.png "Screen shot of the game")
 
 ##### Notable packages used
