@@ -11,7 +11,7 @@ import RemoteData exposing (RemoteData(NotAsked))
 import Svg.Styled
 import Svg.Styled.Attributes
 import UI
-import Util exposing (filterMaybe, keyCodeToString)
+import Util exposing (keyCodeToString)
 import Window exposing (Size)
 
 

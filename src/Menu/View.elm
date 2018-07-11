@@ -8,7 +8,7 @@ import Html.Styled.Events exposing (onClick, onInput)
 import Model exposing (..)
 import RemoteData exposing (..)
 import UI
-import Util exposing (filterMaybe, gameModeToString)
+import Util exposing (gameModeToString)
 
 
 renderMenu : Settings -> Menu -> Html Msg
