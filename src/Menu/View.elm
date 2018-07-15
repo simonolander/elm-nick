@@ -57,7 +57,6 @@ renderMainMenu =
         [ styled img
             [ width (pct 100)
             , height auto
-            , property "image-rendering" "pixelated"
             ]
             [ Html.Styled.Attributes.src "/assets/title.png" ]
             []

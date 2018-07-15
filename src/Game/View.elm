@@ -440,7 +440,6 @@ renderFootball gameToViewBoxCoordinate football =
                 , Svg.Styled.Attributes.height (toString (2 * r))
                 , Svg.Styled.Attributes.transform ("rotate(" ++ (toString rotation) ++ ", " ++ (toString cx) ++ ", " ++ (toString cy) ++ ")")
                 , Svg.Styled.Attributes.xlinkHref "/assets/football.png"
-                , Svg.Styled.Attributes.imageRendering "pixelated"
                 , Svg.Styled.Attributes.preserveAspectRatio "none"
                 ]
                 []
@@ -578,7 +577,6 @@ svgImage x y width height xlinkHref =
         , Svg.Styled.Attributes.width (toString width)
         , Svg.Styled.Attributes.height (toString height)
         , Svg.Styled.Attributes.xlinkHref xlinkHref
-        , Svg.Styled.Attributes.imageRendering "pixelated"
         , Svg.Styled.Attributes.preserveAspectRatio "none"
         ] []
 
